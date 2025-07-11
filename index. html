@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Earner Pro - Play & Earn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Glass Theme */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .dark .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+        
+        .coin-bounce {
+            animation: coinBounce 0.6s ease-in-out;
+        }
+        
+        @keyframes coinBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+        
+        .floating-reward {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 2rem;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            max-width: 500px;
+            width: 90%;
+            margin: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .hidden { display: none !important; }
+        
+        .button-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .button-locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+            position: relative;
+        }
+        
+        .button-locked::before {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            z-index: 1;
+        }
+
+        .verification-pending {
+            border: 2px dashed #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .account-inactive {
+            border: 2px dashed #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.3s ease;
+        }
+
+        .timer-progress {
+            background: linear-gradient(90deg, #ef4444, #f97316);
+            transition: width 1s linear;
+        }
+
+        .earning-glow {
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+        }
+
+        .input-base {
+            font-size: 16px; /* Prevent zoom on mobile */
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Resend button styling */
+        .resend-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* New security indicator */
+        .security-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .security-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.5);
+        }
+        
+        .security-warning {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.5);
+        }
+        
+        .security-alert {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white">
+    <!-- Audio elements for sound effects -->
+    <audio id="coinSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-coin-win-notification-1992.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="errorSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="successSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="warningSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-alarm-990.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="timerSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-clock-bleeps-888.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Security status indicator -->
+    <div class="security-status security-active" id="securityStatus">
+        <i class="fas fa-shield-alt"></i>
+        <span>Security Active</span>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal-overlay" id="registrationModal">
+        <div class="modal-content glass rounded-2xl p-8">
+            <h2 class="text-3xl font-bold mb-6 text-center text-white">
+                <i class="fas fa-user-plus text-blue-400 mr-3"></i>
+                <span data-translate="create_account">Create Account</span>
+            </h2>
+            <form id="registrationForm" class="space-y-4">
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="full_name">Full Name</label>
+                    <input type="text" id="regName" required minlength="2" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="আপনার পূর্ণ নাম">
+                </div>
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="mobile_number">Mobile Number</label>
+                    <input type="tel" id="regMobile" required pattern="^\+?[1-9]\d{1,14}$" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="+8801XXXXXXXXX">
+                    <small class="text-white/60 text-xs">International format (e.g., +8801XXXXXXXXX)</small>
+                </div>
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="email">Gmail Address</label>
+                    <input type="email" id="regEmail" required pattern=".*@gmail\.com$" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="example@gmail.com">
+                    <small class="text-white/60 text-xs">Only Gmail addresses accepted</small>
+                </div>
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="password">Password</label>
+                    <input type="password" id="regPassword" required minlength="6" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="নিরাপদ পাসওয়ার্ড (৬+ অক্ষর)">
+                </div>
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="address_optional">Address (Optional)</label>
+                    <input type="text" id="regAddress" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="ঠিকানা (ঐচ্ছিক)">
+                </div>
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="referral_code">Referral Code (Optional)</label>
+                    <input type="text" id="regReferral" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="রেফারেল কোড">
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
+                        <span data-translate="register">Register</span>
+                    </button>
+                    <button type="button" onclick="showLoginModal()" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
+                        <span data-translate="login">Login</span>
+                    </button>
+                </div>
+                <div class="pt-2">
+                    <button type="button" onclick="enterGuestMode()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl hover:from-yellow-600 hover:to-orange-600 font-semibold transition-all">
+                        <span data-translate="continue_guest">Continue as Guest</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay hidden" id="loginModal">
+        <div class="modal-content glass rounded-2xl p-8">
+            <h2 class="text-3xl font-bold mb-6 text-center text-white">
+                <i class="fas fa-sign-in-alt text-green-400 mr-3"></i>
+                <span data-translate="login">Login</span>
+            </h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="email">Gmail Address</label>
+                    <input type="email" id="loginEmail" required pattern=".*@gmail\.com$" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="example@gmail.com">
+                </div>
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="password">Password</label>
+                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="পাসওয়ার্ড">
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="rememberMe" class="mr-2 w-4 h-4 rounded">
+                    <label for="rememberMe" class="text-white/80 text-sm" data-translate="remember_me">Remember me on this device</label>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
+                        <span data-translate="login">Login</span>
+                    </button>
+                    <button type="button" onclick="showRegistrationModal()" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
+                        <span data-translate="register">Register</span>
+                    </button>
+                </div>
+                <div class="pt-2">
+                    <button type="button" onclick="enterGuestMode()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl hover:from-yellow-600 hover:to-orange-600 font-semibold transition-all">
+                        <span data-translate="continue_guest">Continue as Guest</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Email Verification Modal -->
+    <div class="modal-overlay hidden" id="emailVerificationModal">
+        <div class="modal-content glass rounded-2xl p-8 text-center">
+            <i class="fas fa-envelope-circle-check text-6xl text-blue-400 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-4 text-white" data-translate="verify_email">Verify Your Email</h2>
+            <p class="text-white/80 mb-6" data-translate="verification_sent">A verification code has been sent to your email. Please check and enter the code.</p>
+            <p class="text-white/60 text-sm mb-4" data-translate="check_spam">If you don't see it, check your spam folder!</p>
+            <div class="space-y-4">
+                <input type="text" id="verificationCode" placeholder="Enter 6-digit code" maxlength="6" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 text-center text-lg font-mono input-base">
+                <div class="flex space-x-3">
+                    <button onclick="verifyEmail()" class="flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
+                        <span data-translate="verify">Verify</span>
+                    </button>
+                    <button onclick="resendVerification()" id="resendButton" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
+                        <span data-translate="resend">Resend</span> <span id="resendCountdown"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div class="modal-overlay hidden" id="customAlert">
+        <div class="modal-content glass rounded-2xl p-8 text-center">
+            <i id="alertIcon" class="fas fa-info-circle text-5xl mb-4"></i>
+            <p id="alertMessage" class="text-xl mb-6 text-white"></p>
+            <button onclick="hideCustomAlert()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
+                <span data-translate="ok">OK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay hidden" id="customConfirm">
+        <div class="modal-content glass rounded-2xl p-8 text-center">
+            <i class="fas fa-question-circle text-5xl text-yellow-400 mb-4"></i>
+            <p id="confirmMessage" class="text-xl mb-6 text-white"></p>
+            <div class="flex space-x-4 justify-center">
+                <button onclick="hideCustomConfirm(false)" class="px-6 py-3 glass text-white rounded-xl hover:bg-white/20 font-semibold transition-all">
+                    <span data-translate="cancel">Cancel</span>
+                </button>
+                <button onclick="hideCustomConfirm(true)" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
+                    <span data-translate="confirm">Confirm</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <div class="container mx-auto px-4 py-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <select id="languageSelector" class="glass rounded-xl px-4 py-2 text-white input-base">
+                    <option value="en">English</option>
+                    <option value="bn">বাংলা</option>
+                </select>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-white/90 text-sm" id="userGreeting"></span>
+                    <div id="authButtons"></div>
+                </div>
+            </div>
+
+            <!-- Status Notices -->
+            <div id="guestNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-yellow-400">
+                <div class="flex items-center">
+                    <i class="fas fa-user-clock text-yellow-400 mr-3 text-xl"></i>
+                    <div>
+                        <h4 class="font-semibold text-yellow-400" data-translate="guest_mode_title">Guest Mode</h4>
+                        <p class="text-white/80 text-sm" data-translate="guest_mode_text">You're browsing as a guest. Register to start earning coins!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="verificationNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-orange-400 verification-pending">
+                <div class="flex items-center">
+                    <i class="fas fa-envelope-open-text text-orange-400 mr-3 text-xl pulse"></i>
+                    <div>
+                        <h4 class="font-semibold text-orange-400" data-translate="verification_required">Email Verification Required</h4>
+                        <p class="text-white/80 text-sm" data-translate="verification_notice">Please verify your email to start earning coins!</p>
+                        <button onclick="showEmailVerification()" class="mt-2 text-xs bg-orange-500 text-white px-3 py-1 rounded-lg hover:bg-orange-600 transition-all">
+                            <span data-translate="verify_now">Verify Now</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inactiveNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-red-400 account-inactive">
+                <div class="flex items-center">
+                    <i class="fas fa-user-slash text-red-400 mr-3 text-xl"></i>
+                    <div>
+                        <h4 class="font-semibold text-red-400" data-translate="account_inactive">Account Deactivated</h4>
+                        <p class="text-white/80 text-sm" data-translate="inactive_notice">Your account has been deactivated. Please contact support.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="unlockNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-cyan-400">
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-lock text-cyan-400 mr-3 text-2xl"></i>
+                    <div>
+                        <h4 class="font-semibold text-cyan-400" data-translate="daily_unlock_title">Daily Activities Locked</h4>
+                        <p class="text-white/80 text-sm" data-translate="daily_unlock_text">Share the app to earn diamonds and unlock today's activities!</p>
+                        <p class="text-white/80 text-xs mt-1">
+                            <span data-translate="games_cost">Games: 10💎</span> | 
+                            <span data-translate="videos_cost">Videos: 50💎</span> | 
+                            <span data-translate="you_have">You have:</span> 
+                            <span id="currentDiamonds">0</span>💎
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div class="text-center mb-8">
+                <h1 class="text-5xl font-bold text-white mb-3">
+                    <i class="fas fa-coins text-yellow-400"></i> 
+                    <span data-translate="title">Coin Earner Pro</span>
+                </h1>
+                <p class="text-white/80 text-lg" data-translate="subtitle">Play games and earn coins! 1000 coins = 1.00 BDT</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+                <div class="glass rounded-2xl p-6 text-center">
+                    <i class="fas fa-coins text-4xl text-yellow-400 mb-3 coin-icon"></i>
+                    <h3 class="text-white/70 text-sm font-medium mb-1" data-translate="total_coins">Total Coins</h3>
+                    <p class="text-3xl font-bold text-white" id="coinCount">0</p>
+                </div>
+
+                <div class="glass rounded-2xl p-6 text-center">
+                    <i class="fas fa-gem text-4xl text-cyan-400 mb-3"></i>
+                    <h3 class="text-white/70 text-sm font-medium mb-1" data-translate="diamonds">Diamonds</h3>
+                    <p class="text-3xl font-bold text-cyan-400" id="diamondCount">0</p>
+                </div>
+
+                <div class="glass rounded-2xl p-6 text-center">
+                    <i class="fas fa-money-bill-wave text-4xl text-green-400 mb-3"></i>
+                    <h3 class="text-white/70 text-sm font-medium mb-1" data-translate="earnings">Earnings</h3>
+                    <p class="text-3xl font-bold text-green-400 earning-glow" id="earnings">0.00 BDT</p>
+                </div>
+
+                <div class="glass rounded-2xl p-6 text-center">
+                    <i class="fas fa-gamepad text-4xl text-purple-400 mb-3"></i>
+                    <h3 class="text-white/70 text-sm font-medium mb-1" data-translate="activities">Activities</h3>
+                    <p class="text-3xl font-bold text-purple-400" id="activitiesCount">0</p>
+                </div>
+
+                <div class="glass rounded-2xl p-6 text-center">
+                    <i class="fas fa-users text-4xl text-blue-400 mb-3"></i>
+                    <h3 class="text-white/70 text-sm font-medium mb-1" data-translate="referrals">Referrals</h3>
+                    <p class="text-3xl font-bold text-blue-400" id="referralCount">0</p>
+                </div>
+            </div>
+
+            <!-- Progress to Next Taka -->
+            <div class="glass rounded-2xl p-6 mb-8">
+                <h3 class="text-white text-lg font-semibold mb-3">
+                    <i class="fas fa-target text-purple-400 mr-2"></i>
+                    <span data-translate="progress_title">Progress to Next Taka</span>
+                </h3>
+                <div class="bg-white/20 rounded-full h-4 mb-2">
+                    <div class="progress-bar h-4 rounded-full" id="progressBar" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-white/70" id="progressText">0/1000 coins</p>
+            </div>
+
+            <!-- Activity Timer -->
+            <div class="glass rounded-2xl p-4 mb-6 hidden border-l-4 border-blue-400" id="activityTimer">
+                <h3 class="text-blue-400 text-lg font-semibold mb-3">
+                    <i class="fas fa-clock mr-2"></i>
+                    <span data-translate="activity_in_progress">Activity in Progress</span>
+                </h3>
+                <div class="bg-white/20 rounded-full h-3 mb-2">
+                    <div class="timer-progress h-3 rounded-full" id="timerProgress" style="width: 100%"></div>
+                </div>
+                <p class="text-sm text-white/80" id="timerText">Time remaining: 30 seconds</p>
+                <p class="text-xs text-blue-400 mt-2" data-translate="timer_instruction">Stay on the page to earn your coins!</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <button id="gamesBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                    <i class="fas fa-gamepad text-5xl mb-4 text-purple-400 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold text-white mb-2" data-translate="play_games">Play Games</h3>
+                    <p class="text-white/70 text-sm" data-translate="earn_10_coins">Earn 10 Coins (30s)</p>
+                    <p class="text-cyan-400 text-xs mt-1" data-translate="cost_10_diamonds">Cost: 10 💎</p>
+                </button>
+
+                <button id="videosBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                    <i class="fas fa-video text-5xl mb-4 text-red-400 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold text-white mb-2" data-translate="watch_videos">Watch Videos</h3>
+                    <p class="text-white/70 text-sm" data-translate="earn_10_coins">Earn 10 Coins (30s)</p>
+                    <p class="text-cyan-400 text-xs mt-1" data-translate="cost_50_diamonds">Cost: 50 💎</p>
+                </button>
+
+                <button id="productsBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                    <i class="fas fa-shopping-bag text-5xl mb-4 text-green-400 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold text-white mb-2" data-translate="view_products">View Products</h3>
+                    <p class="text-white/70 text-sm" data-translate="browse_products">Browse Amazing Products</p>
+                    <p class="text-green-400 text-xs mt-1" data-translate="free_browsing">Free Browsing</p>
+                </button>
+
+                <button id="newsBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                    <i class="fas fa-gamepad text-5xl mb-4 text-purple-400 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Read News</h3>
+                    <p class="text-white/70 text-sm" data-translate="earn_10_coins">Earn 10 Coins (30s)</p>
+                  <p class="text-green-400 text-xs mt-1" data-translate="free_browsing">Free Browsing</p>
+                    <p class="text-cyan-400 text-xs mt-1" >Cost:💎Free</p>
+                </button>
+            </div>
+
+            <!-- User Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" id="userOnlySection">
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-white text-lg font-semibold mb-3">
+                        <i class="fas fa-share-alt text-blue-400 mr-2"></i>
+                        <span data-translate="sharing_rewards">Sharing & Rewards</span>
+                    </h3>
+                    <p class="text-sm text-white/70 mb-4" data-translate="sharing_text">Share to earn diamonds and coins!</p>
+                    <div class="bg-white/10 p-3 rounded-xl mb-4">
+                        <p class="text-xs text-white/60 mb-1" data-translate="your_code">Your Referral Code:</p>
+                        <p class="font-mono text-lg font-bold text-white" id="referralCode">LOADING...</p>
+                    </div>
+                    <button onclick="shareApp()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all mb-2">
+                        <i class="fas fa-share mr-2"></i>
+                        <span data-translate="share_app">Share App (+2💎)</span>
+                    </button>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-white text-lg font-semibold mb-3">
+                        <i class="fas fa-money-bill-wave text-green-400 mr-2"></i>
+                        <span data-translate="withdraw_earnings">Withdraw Earnings</span>
+                    </h3>
+                    <p class="text-sm text-white/70 mb-4" data-translate="withdraw_text">Minimum withdrawal: 20.00 BDT</p>
+                    <div class="bg-white/10 p-3 rounded-xl mb-4">
+                        <p class="text-xs text-white/60" data-translate="withdraw_note">
+                            Available: <span id="withdrawableAmount">0.00 BDT</span><br>
+                            Data resets after withdrawal
+                        </p>
+                    </div>
+                    <button onclick="withdrawEarnings()" id="withdrawBtn" class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-4 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
+                        <i class="fas fa-whatsapp mr-2"></i>
+                        <span data-translate="withdraw_whatsapp">Withdraw via WhatsApp</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="glass rounded-2xl p-6 mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-3 mt-1 text-xl"></i>
+                    <div>
+                        <h4 class="font-semibold text-yellow-400 mb-3" data-translate="how_to_earn">How to Earn:</h4>
+                        <ul class="text-white/80 text-sm space-y-2 list-disc list-inside">
+                            <li data-translate="instruction_1">Register with Gmail and verify your email</li>
+                            <li data-translate="instruction_2">Share the app to earn 2 diamonds per share</li>
+                            <li data-translate="instruction_3">Use diamonds to unlock daily games (10💎) and videos (50💎)</li>
+                            <li data-translate="instruction_4">Complete activities for 30 seconds to earn 10 coins each</li>
+                            <li data-translate="instruction_5">Valid referral codes give 30 bonus coins</li>
+                            <li data-translate="instruction_6">When someone uses your referral, you get 30 coins</li>
+                            <li data-translate="instruction_7">Browse products freely without any cost</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-8 text-white/60">
+                <p class="text-sm">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    <span data-translate="footer_info">Secure data storage with advanced anti-cheat protection</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced obfuscated configuration
+        const config = {
+            apiEndpoint: 'https://script.google.com/macros/s/AKfycbwzeoNtCleXecmpyEpfQMiZxNHizvl84nUipSj1FxTySFVhQrT-3K9Oo_7FiidM5HPL/exec',
+            whatsappNumber: '8801700000000',
+            appVersion: '2.0.0'
+        };
+
+        // Enhanced anti-cheat system
+        let securityState = {
+            sessionStart: Date.now(),
+            activityMonitoring: false,
+            suspiciousActions: 0,
+            lastActivity: Date.now(),
+            pageBlurCount: 0,
+            tabSwitches: 0,
+            fingerprint: generateFingerprint(),
+            coinIncrementAttempts: 0
+        };
+
+        // Audio enabled flag
+        let audioEnabled = false;
+
+        // Enable audio on user interaction
+        function enableAudio() {
+            if (!audioEnabled) {
+                audioEnabled = true;
+            }
+        }
+
+        // Language translations
+        const translations = {
+            en: {
+                title: "Coin Earner Pro",
+                subtitle: "Play games and earn coins! 1000 coins = 1.00 BDT",
+                create_account: "Create Account",
+                full_name: "Full Name",
+                mobile_number: "Mobile Number",
+                email: "Gmail Address",
+                password: "Password",
+                address_optional: "Address (Optional)",
+                referral_code: "Referral Code (Optional)",
+                register: "Register",
+                login: "Login",
+                remember_me: "Remember me on this device",
+                logout: "Logout",
+                continue_guest: "Continue as Guest",
+                verify_email: "Verify Your Email",
+                verification_sent: "A verification code has been sent to your email",
+                verify: "Verify",
+                resend: "Resend",
+                check_spam: "If you don't see it, check your spam folder!",
+                verification_required: "Email Verification Required",
+                verification_notice: "Please verify your email to start earning coins!",
+                verify_now: "Verify Now",
+                account_inactive: "Account Deactivated",
+                inactive_notice: "Your account has been deactivated. Please contact support.",
+                guest_mode_title: "Guest Mode",
+                guest_mode_text: "You're browsing as a guest. Register to start earning coins!",
+                total_coins: "Total Coins",
+                diamonds: "Diamonds",
+                earnings: "Earnings",
+                activities: "Activities",
+                referrals: "Referrals",
+                progress_title: "Progress to Next Taka",
+                activity_in_progress: "Activity in Progress",
+                timer_instruction: "Stay on the page to earn your coins!",
+                play_games: "Play Games",
+                watch_videos: "Watch Videos",
+                view_products: "View Products",
+                browse_products: "Browse Amazing Products",
+                free_browsing: "Free Browsing",
+                earn_10_coins: "Earn 10 Coins (30s)",
+                cost_10_diamonds: "Cost: 10 💎",
+                cost_50_diamonds: "Cost: 50 💎",
+                daily_unlock_title: "Daily Activities Locked",
+                daily_unlock_text: "Share the app to earn diamonds and unlock today's activities!",
+                games_cost: "Games: 10💎",
+                videos_cost: "Videos: 50💎",
+                you_have: "You have:",
+                sharing_rewards: "Sharing & Rewards",
+                sharing_text: "Share to earn diamonds and coins!",
+                your_code: "Your Referral Code:",
+                share_app: "Share App (+2💎)",
+                withdraw_earnings: "Withdraw Earnings",
+                withdraw_text: "Minimum withdrawal: 20.00 BDT",
+                withdraw_note: "Available: {amount} BDT\nData resets after withdrawal",
+                withdraw_whatsapp: "Withdraw via WhatsApp",
+                how_to_earn: "How to Earn:",
+                instruction_1: "Register with Gmail and verify your email",
+                instruction_2: "Share the app to earn 2 diamonds per share",
+                instruction_3: "Use diamonds to unlock daily games (10💎) and videos (50💎)",
+                instruction_4: "Complete activities for 30 seconds to earn 10 coins each",
+                instruction_5: "Valid referral codes give 30 bonus coins",
+                instruction_6: "When someone uses your referral, you get 30 coins",
+                instruction_7: "Browse products freely without any cost",
+                footer_info: "Secure data storage with advanced anti-cheat protection",
+                ok: "OK",
+                cancel: "Cancel",
+                confirm: "Confirm",
+                success: "Success!",
+                error: "Error!",
+                warning: "Warning!",
+                loading: "Loading...",
+                registration_success: "Account created successfully! Please verify your email.",
+                login_success: "Welcome back!",
+                invalid_credentials: "Invalid login credentials",
+                email_exists: "Email already registered",
+                mobile_exists: "Mobile number already registered",
+                invalid_gmail: "Please use a valid Gmail address",
+                invalid_mobile: "Please use a valid international mobile number format",
+                verification_success: "Email verified successfully!",
+                invalid_verification_code: "Invalid verification code",
+                verification_resent: "Verification code resent",
+                account_deactivated: "Your account has been deactivated",
+                activity_completed: "Activity completed! You earned 10 coins.",
+                withdraw_success: "Withdrawal request sent via WhatsApp!",
+                withdraw_confirm: "Send withdrawal request for {amount} BDT?",
+                insufficient_balance: "Insufficient balance for withdrawal (minimum 20 BDT)",
+                time_remaining: "Time remaining:",
+                seconds: "seconds",
+                cheat_detected: "Cheating detected! Activity cancelled.",
+                referral_bonus: "Referral bonus applied! +30 coins",
+                invalid_referral: "Invalid referral code",
+                share_earned: "Share bonus earned! +2 diamonds",
+                guest_earning_disabled: "Please register and verify email to earn rewards!",
+                insufficient_diamonds_games: "Insufficient diamonds! You need 10 diamonds for games.",
+                insufficient_diamonds_videos: "Insufficient diamonds! You need 50 diamonds for videos.",
+                daily_unlocked_games: "Games unlocked for today!",
+                daily_unlocked_videos: "Videos unlocked for today!",
+                suspicious_activity: "Suspicious activity detected!",
+                activity_expired: "Activity timer expired.",
+                coin_cheat_detected: "Coin cheating detected! Action blocked."
+            },
+            bn: {
+                title: "কয়েন আর্নার প্রো",
+                subtitle: "গেম খেলে কয়েন জিতুন! ১০০০ কয়েন = ১.০০ টাকা",
+                create_account: "অ্যাকাউন্ট তৈরি করুন",
+                full_name: "পূর্ণ নাম",
+                mobile_number: "মোবাইল নম্বর",
+                email: "জিমেইল ঠিকানা",
+                password: "পাসওয়ার্ড",
+                address_optional: "ঠিকানা (ঐচ্ছিক)",
+                referral_code: "রেফারেল কোড (ঐচ্ছিক)",
+                register: "নিবন্ধন",
+                login: "প্রবেশ",
+                remember_me: "এই ডিভাইসে আমাকে মনে রাখুন",
+                logout: "বের হন",
+                continue_guest: "অতিথি হিসেবে চালিয়ে যান",
+                verify_email: "আপনার ইমেইল যাচাই করুন",
+                verification_sent: "আপনার ইমেইলে যাচাইকরণ কোড পাঠানো হয়েছে",
+                verify: "যাচাই করুন",
+                resend: "পুনরায় পাঠান",
+                check_spam: "যদি না পান, আপনার স্প্যাম ফোল্ডার চেক করুন!",
+                verification_required: "ইমেইল যাচাইকরণ প্রয়োজন",
+                verification_notice: "কয়েন অর্জন শুরু করতে আপনার ইমেইল যাচাই করুন!",
+                verify_now: "এখনই যাচাই করুন",
+                account_inactive: "অ্যাকাউন্ট নিষ্ক্রিয়",
+                inactive_notice: "আপনার অ্যাকাউন্ট নিষ্ক্রিয় করা হয়েছে। সাপোর্টে যোগাযোগ করুন।",
+                guest_mode_title: "অতিথি মোড",
+                guest_mode_text: "আপনি অতিথি হিসেবে ব্রাউজ করছেন। কয়েন অর্জন শুরু করতে নিবন্ধন করুন!",
+                total_coins: "মোট কয়েন",
+                diamonds: "হীরা",
+                earnings: "উপার্জন",
+                activities: "কার্যক্রম",
+                referrals: "রেফারেল",
+                progress_title: "পরবর্তী টাকার অগ্রগতি",
+                activity_in_progress: "কার্যক্রম চলছে",
+                timer_instruction: "কয়েন পেতে পেজে থাকুন!",
+                play_games: "গেম খেলুন",
+                watch_videos: "ভিডিও দেখুন",
+                view_products: "পণ্য দেখুন",
+                browse_products: "দুর্দান্ত পণ্য ব্রাউজ করুন",
+                free_browsing: "বিনামূল্যে ব্রাউজিং",
+                earn_10_coins: "১০ কয়েন জিতুন (৩০সে)",
+                cost_10_diamonds: "খরচ: ১০ 💎",
+                cost_50_diamonds: "খরচ: ৫০ 💎",
+                daily_unlock_title: "দৈনিক কার্যক্রম লক",
+                daily_unlock_text: "হীরা অর্জন করতে অ্যাপ শেয়ার করুন এবং আজকের কার্যক্রম আনলক করুন!",
+                games_cost: "গেম: ১০💎",
+                videos_cost: "ভিডিও: ৫০💎",
+                you_have: "আপনার আছে:",
+                sharing_rewards: "শেয়ারিং এবং পুরস্কার",
+                sharing_text: "হীরা ও কয়েন অর্জনের জন্য শেয়ার করুন!",
+                your_code: "আপনার রেফারেল কোড:",
+                share_app: "অ্যাপ শেয়ার (+২💎)",
+                withdraw_earnings: "উপার্জন উত্তোলন",
+                withdraw_text: "সর্বনিম্ন উত্তোলন: ২০.০০ টাকা",
+                withdraw_note: "উপলব্ধ: {amount} টাকা\nউত্তোলনের পর ডেটা রিসেট",
+                withdraw_whatsapp: "হোয়াটসঅ্যাপে উত্তোলন",
+                how_to_earn: "কীভাবে উপার্জন করবেন:",
+                instruction_1: "জিমেইল দিয়ে নিবন্ধন করুন এবং ইমেইল যাচাই করুন",
+                instruction_2: "প্রতি শেয়ারে ২ হীরা পেতে অ্যাপ শেয়ার করুন",
+                instruction_3: "দৈনিক গেম (১০💎) এবং ভিডিও (৫০💎) আনলক করতে হীরা ব্যবহার করুন",
+                instruction_4: "প্রতিটি ১০ কয়েন পেতে ৩০ সেকেন্ড কার্যক্রম সম্পূর্ণ করুন",
+                instruction_5: "বৈধ রেফারেল কোড ৩০ বোনাস কয়েন দেয়",
+                instruction_6: "কেউ আপনার রেফারেল ব্যবহার করলে আপনি ৩০ কয়েন পান",
+                instruction_7: "বিনামূল্যে পণ্য ব্রাউজ করুন",
+                footer_info: "উন্নত অ্যান্টি-চিট সুরক্ষা সহ নিরাপদ ডেটা স্টোরেজ",
+                ok: "ঠিক আছে",
+                cancel: "বাতিল",
+                confirm: "নিশ্চিত",
+                success: "সফল!",
+                error: "ত্রুটি!",
+                warning: "সতর্কতা!",
+                loading: "লোডিং...",
+                registration_success: "অ্যাকাউন্ট সফলভাবে তৈরি! দয়া করে আপনার ইমেইল যাচাই করুন।",
+                login_success: "আবার স্বাগতম!",
+                invalid_credentials: "ভুল লগইন তথ্য",
+                email_exists: "ইমেইল ইতিমধ্যে নিবন্ধিত",
+                mobile_exists: "মোবাইল নম্বর ইতিমধ্যে নিবন্ধিত",
+                invalid_gmail: "অনুগ্রহ করে একটি বৈধ জিমেইল ঠিকানা ব্যবহার করুন",
+                invalid_mobile: "অনুগ্রহ করে একটি বৈধ আন্তর্জাতিক মোবাইল নম্বর ফরম্যাট ব্যবহার করুন",
+                verification_success: "ইমেইল সফলভাবে যাচাই করা হয়েছে!",
+                invalid_verification_code: "ভুল যাচাইকরণ কোড",
+                verification_resent: "যাচাইকরণ কোড পুনরায় পাঠানো হয়েছে",
+                account_deactivated: "আপনার অ্যাকাউন্ট নিষ্ক্রিয় করা হয়েছে",
+                activity_completed: "কার্যক্রম সম্পন্ন! আপনি ১০ কয়েন পেয়েছেন।",
+                withdraw_success: "উত্তোলনের অনুরোধ হোয়াটসঅ্যাপে পাঠানো হয়েছে!",
+                withdraw_confirm: "{amount} টাকার উত্তোলনের অনুরোধ পাঠাবেন?",
+                insufficient_balance: "উত্তোলনের জন্য অপর্যাপ্ত ব্যালেন্স (সর্বনিম্ন ২০ টাকা)",
+                time_remaining: "সময় বাকি:",
+                seconds: "সেকেন্ড",
+                cheat_detected: "প্রতারণা ধরা পড়েছে! কার্যক্রম বাতিল।",
+                referral_bonus: "রেফারেল বোনাস প্রয়োগ! +৩০ কয়েন",
+                invalid_referral: "ভুল রেফারেল কোড",
+                share_earned: "শেয়ার বোনাস অর্জিত! +২ হীরা",
+                guest_earning_disabled: "পুরস্কার অর্জনের জন্য নিবন্ধন করুন এবং ইমেইল যাচাই করুন!",
+                insufficient_diamonds_games: "অপর্যাপ্ত হীরা! গেমের জন্য ১০ হীরা প্রয়োজন।",
+                insufficient_diamonds_videos: "অপর্যাপ্ত হীরা! ভিডিওর জন্য ৫০ হীরা প্রয়োজন।",
+                daily_unlocked_games: "আজকের জন্য গেম আনলক হয়েছে!",
+                daily_unlocked_videos: "আজকের জন্য ভিডিও আনলক হয়েছে!",
+                suspicious_activity: "সন্দেহজনক কার্যকলাপ শনাক্ত!",
+                activity_expired: "কার্যক্রমের সময় শেষ।",
+                coin_cheat_detected: "কয়েন প্রতারণা শনাক্ত! ক্রিয়া ব্লক করা হয়েছে।"
+            }
+        };
+
+        // Application state
+        let currentUser = null;
+        let isGuestMode = false;
+        let appState = {
+            currentLanguage: 'bn',
+            activityInProgress: false,
+            activityEndTime: 0,
+            activityWindow: null,
+            activityType: '',
+            windowCheckInterval: null,
+            activityStartTime: 0,
+            pendingVerification: null,
+            resendTimer: null,
+            resendCountdown: 60,
+            lastCoinAddition: 0
+        };
+
+        let activityTimer = null;
+        let confirmCallback = null;
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            try {
+                initAntiCheat();
+                detectAndSetLanguage();
+                setupEventListeners();
+                window.open('https://mustakimridoymr.github.io', '_blank');
+                // Check for stored login first
+                const hasStoredLogin = checkStoredLogin();
+                checkReferralCode();
+                
+                // Show initial modal if no stored login
+                if (!hasStoredLogin) {
+                    document.getElementById('registrationModal').classList.remove('hidden');
+                }
+
+                console.log('App initialized successfully');
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                showCustomAlert('Initialization error. Please refresh the page.', 'error');
+            }
+        }
+
+        function setupEventListeners() {
+            // Registration form
+            document.getElementById('registrationForm').addEventListener('submit', handleRegistration);
+            
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+            // Language selector
+            document.getElementById('languageSelector').addEventListener('change', (e) => {
+                setLanguage(e.target.value);
+            });
+
+            // Activity buttons
+            document.getElementById('gamesBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('games', 'https://mustakimridoymr.github.io/Games.html');
+                } else {
+                    if (!checkActivityPermission('games', 10)) return;
+                    startActivity('games', 'https://mustakimridoymr.github.io/Games.html');
+                }
+            });
+
+            document.getElementById('videosBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('videos', 'https://mustakimridoymr.github.io/Resources.html');
+                } else {
+                    if (!checkActivityPermission('videos', 50)) return;
+                    startActivity('videos', 'https://mustakimridoymr.github.io/Resources.html');
+                }
+            });
+
+            document.getElementById('productsBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('products', 'https://mustakimridoymr.github.io/affiliate.html');
+                } else {
+                    if (!checkActivityPermission('products', 10)) return;
+                    startActivity('products', 'https://mustakimridoymr.github.io/affiliate.html');
+                }
+            });
+
+            document.getElementById('newsBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('news', 'https://mustakimridoymr.github.io/newsApp.html');
+                } else {
+                    if (!checkActivityPermission('news', 10)) return;
+                    startActivity('news', 'https://mustakimridoymr.github.io/newsApp.html');
+                }
+            });
+
+            // Enable audio on user interaction
+            document.body.addEventListener('click', enableAudio);
+            document.body.addEventListener('touchstart', enableAudio);
+        }
+
+        // Enhanced security and fingerprinting
+        function generateFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Security fingerprint', 2, 2);
+            
+            return btoa(JSON.stringify({
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                language: navigator.language,
+                platform: navigator.platform,
+                canvas: canvas.toDataURL(),
+                timestamp: Date.now()
+            }));
+        }
+
+        function initAntiCheat() {
+            // Enhanced monitoring
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && appState.activityInProgress) {
+                    securityState.tabSwitches++;
+                    if (securityState.tabSwitches > 1) {
+                        handleSecurityViolation('excessive_tab_switching');
+                    }
+                }
+            });
+
+            window.addEventListener('blur', () => {
+                securityState.pageBlurCount++;
+                if (appState.activityInProgress && securityState.pageBlurCount > 2) {
+                    handleSecurityViolation('page_focus_lost');
+                }
+            });
+
+            // Monitor suspicious console activity
+            let devtools = {open: false, orientation: null};
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        securityState.suspiciousActions++;
+                        updateSecurityStatus();
+                    }
+                }
+            }, 500);
+        }
+
+        function updateSecurityStatus() {
+            const securityStatus = document.getElementById('securityStatus');
+            if (securityState.suspiciousActions === 0) {
+                securityStatus.className = 'security-status security-active';
+                securityStatus.innerHTML = '<i class="fas fa-shield-alt"></i> Security Active';
+            } else if (securityState.suspiciousActions < 3) {
+                securityStatus.className = 'security-status security-warning';
+                securityStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${securityState.suspiciousActions} Suspicious Events`;
+            } else {
+                securityStatus.className = 'security-status security-alert';
+                securityStatus.innerHTML = '<i class="fas fa-skull-crossbones"></i> Security Alert!';
+            }
+        }
+
+        function handleSecurityViolation(reason) {
+            securityState.suspiciousActions++;
+            updateSecurityStatus();
+            
+            if (appState.activityInProgress) {
+                resetActivityState();
+                showCustomAlert(translations[appState.currentLanguage].cheat_detected, 'error');
+                playSound('error');
+                window.open('https://mustakimridoymr.github.io/MR-Bot/', '_blank');
+            }
+            
+            // Log security event
+            if (currentUser) {
+                logSecurityEvent(currentUser.email, reason);
+            }
+        }
+
+        async function logSecurityEvent(userEmail, reason) {
+            try {
+                const logData = {
+                    email: userEmail,
+                    event: reason,
+                    timestamp: new Date().toISOString(),
+                    fingerprint: securityState.fingerprint,
+                    suspiciousCount: securityState.suspiciousActions
+                };
+
+                await makeApiCall({
+                    folder: 'security_logs',
+                    filename: `${userEmail.replace('@', '_at_').replace('.', '_dot_')}_${Date.now()}.json`,
+                    content: JSON.stringify(logData)
+                });
+            } catch (error) {
+                console.error('Failed to log security event:', error);
+            }
+        }
+
+        // Helper function for making API calls with proper error handling
+        async function makeApiCall(data) {
+            try {
+                const formData = new FormData();
+                Object.keys(data).forEach(key => {
+                    formData.append(key, data[key]);
+                });
+
+                console.log('Making API call with data:', data);
+
+                const response = await fetch(config.apiEndpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const responseText = await response.text();
+                console.log('API Response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    return jsonResponse;
+                } catch {
+                    // If not JSON, assume success if no error message
+                    if (responseText.includes('error') || responseText.includes('Error')) {
+                        throw new Error(responseText);
+                    }
+                    return { status: 'success', message: responseText };
+                }
+            } catch (error) {
+                console.error('API call failed:', error);
+                throw error;
+            }
+        }
+
+        // Enhanced user data validation
+        function validateRegistrationData(name, mobile, email, password) {
+            const errors = [];
+
+            if (name.length < 2 || name.length > 50) {
+                errors.push('Name must be 2-50 characters');
+            }
+
+            if (!/^\+?[1-9]\d{1,14}$/.test(mobile)) {
+                errors.push(translations[appState.currentLanguage].invalid_mobile);
+            }
+
+            if (!email.toLowerCase().endsWith('@gmail.com') || email.length < 10) {
+                errors.push(translations[appState.currentLanguage].invalid_gmail);
+            }
+
+            if (password.length < 6) {
+                errors.push('Password must be at least 6 characters');
+            }
+
+            return errors;
+        }
+
+        async function handleRegistration(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('regName').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const password = document.getElementById('regPassword').value;
+            const address = document.getElementById('regAddress').value.trim();
+            const referralCode = document.getElementById('regReferral').value.trim();
+
+            const errors = validateRegistrationData(name, mobile, email, password);
+            if (errors.length > 0) {
+                showCustomAlert(errors.join('\n'), 'error');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="spinner"></div>Processing...';
+            submitBtn.disabled = true;
+
+            try {
+                await register(name, mobile, email, password, address, referralCode);
+            } catch (error) {
+                console.error('Registration error:', error);
+                showCustomAlert('Registration failed. Please try again.', 'error');
+                playSound('error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="spinner"></div>Logging in...';
+            submitBtn.disabled = true;
+
+            try {
+                await login(email, password, rememberMe);
+            } catch (error) {
+                console.error('Login error:', error);
+                showCustomAlert('Login failed. Please try again.', 'error');
+                playSound('error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function register(name, mobile, email, password, address, referralCode) {
+            // Check if email exists
+            try {
+                const existingEmailUser = await loadUserData('email', email);
+                if (existingEmailUser) {
+                    showCustomAlert(translations[appState.currentLanguage].email_exists, 'error');
+                    playSound('error');
+                    return false;
+                }
+            } catch (error) {
+                // User doesn't exist, continue
+            }
+
+            // Validate and apply referral code
+            let referralBonus = 0;
+            if (referralCode) {
+                const isValidReferral = await validateReferralCode(referralCode);
+                if (isValidReferral) {
+                    referralBonus = 30;
+                    // Award referrer bonus
+                    await awardReferralBonus(referralCode, email);
+                }
+            }
+
+            const verificationCode = generateVerificationCode();
+            const userData = {
+                name: name,
+                mobile: mobile,
+                email: email,
+                password: password,
+                address: address,
+                coins: 10 + referralBonus,
+                diamonds: 0,
+                earnings: 0,
+                activities: 0,
+                referrals: 0,
+                referralCode: generateReferralCode(),
+                usedReferralCode: referralCode,
+                joinDate: new Date().toISOString(),
+                lastActivity: new Date().toISOString(),
+                lastUnlockDate: null,
+                dailyUnlockedGames: false,
+                dailyUnlockedVideos: false,
+                isEmailVerified: false,
+                isActive: true,
+                verificationCode: verificationCode,
+                fingerprint: securityState.fingerprint
+            };
+
+            try {
+                // Save user data first
+                const result = await saveUserData(userData);
+                console.log('User data saved:', result);
+
+                // Send verification email
+                await sendVerificationEmail(userData);
+                console.log('Verification email sent');
+
+                appState.pendingVerification = userData;
+                hideAuthModals();
+                showEmailVerification();
+                showCustomAlert(translations[appState.currentLanguage].registration_success, 'success');
+                playSound('success');
+                return true;
+            } catch (error) {
+                console.error('Registration process failed:', error);
+                showCustomAlert('Registration failed: ' + error.message, 'error');
+                playSound('error');
+                return false;
+            }
+        }
+
+        async function login(email, password, rememberMe = false) {
+            const userData = await loadUserData('email', email);
+
+            if (!userData || userData.password !== password) {
+                showCustomAlert(translations[appState.currentLanguage].invalid_credentials, 'error');
+                playSound('error');
+                return false;
+            }
+
+            if (!userData.isActive) {
+                showCustomAlert(translations[appState.currentLanguage].account_deactivated, 'error');
+                playSound('error');
+                return false;
+            }
+
+            // Update login data
+            userData.lastActivity = new Date().toISOString();
+            
+            // Migrate old data if needed
+            if (userData.dailyUnlockedGames === undefined) {
+                userData.dailyUnlockedGames = false;
+                userData.dailyUnlockedVideos = false;
+                userData.isEmailVerified = userData.isEmailVerified || false;
+                userData.isActive = userData.isActive !== false;
+            }
+
+            await saveUserData(userData);
+
+            currentUser = userData;
+            isGuestMode = false;
+
+            // Save login data if remember me is checked
+            if (rememberMe) {
+                localStorage.setItem('rememberedLogin', JSON.stringify({
+                    email: email,
+                    password: password,
+                    timestamp: Date.now()
+                }));
+            }
+
+            hideAuthModals();
+            showMainApp();
+            showCustomAlert(translations[appState.currentLanguage].login_success, 'success');
+            playSound('success');
+            return true;
+        }
+
+        function checkStoredLogin() {
+            const stored = localStorage.getItem('rememberedLogin');
+            if (!stored) return false;
+
+            try {
+                const loginData = JSON.parse(stored);
+                // Check if stored login is not older than 30 days
+                if (Date.now() - loginData.timestamp > 30 * 24 * 60 * 60 * 1000) {
+                    localStorage.removeItem('rememberedLogin');
+                    return false;
+                }
+
+                // Auto-fill login form
+                document.getElementById('loginEmail').value = loginData.email;
+                document.getElementById('loginPassword').value = loginData.password;
+                document.getElementById('rememberMe').checked = true;
+                
+                // Auto-login
+                login(loginData.email, loginData.password, true);
+                return true;
+            } catch (error) {
+                localStorage.removeItem('rememberedLogin');
+                return false;
+            }
+        }
+
+        async function validateReferralCode(code) {
+            try {
+                // Simple validation - check format
+                return code.startsWith('REF') && code.length >= 9;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function awardReferralBonus(referralCode, newUserEmail) {
+            try {
+                console.log(`Awarding referral bonus for code: ${referralCode} to new user: ${newUserEmail}`);
+                // In real implementation, find user with referralCode and award bonus
+            } catch (error) {
+                console.error('Failed to award referral bonus:', error);
+            }
+        }
+
+        function generateVerificationCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        async function sendVerificationEmail(userData) {
+            try {
+                const emailSubject = 'Email Verification - Coin Earner Pro';
+                const emailBody = `
+Dear ${userData.name},
+
+Thank you for registering with Coin Earner Pro!
+
+Your email verification code is: ${userData.verificationCode}
+
+Please enter this code in the app to verify your email address and start earning coins.
+
+If you didn't register for this account, please ignore this email.
+
+Best regards,
+Coin Earner Pro Team
+                `;
+
+                const htmlBody = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                        <h2 style="color: #667eea;">Email Verification - Coin Earner Pro</h2>
+                        <p>Dear ${userData.name},</p>
+                        <p>Thank you for registering with Coin Earner Pro!</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+                            <p style="margin: 0; font-size: 16px;">Your verification code is:</p>
+                            <h1 style="color: #667eea; font-size: 32px; margin: 10px 0; letter-spacing: 4px;">${userData.verificationCode}</h1>
+                        </div>
+                        <p>Please enter this code in the app to verify your email address and start earning coins.</p>
+                        <p>If you didn't register for this account, please ignore this email.</p>
+                        <p style="color: #666; font-size: 14px; margin-top: 20px;">If you don't see this email in your inbox, please check your spam folder.</p>
+                        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+                        <p style="color: #666; font-size: 14px;">Best regards,<br>Coin Earner Pro Team</p>
+                    </div>
+                `;
+
+                await makeApiCall({
+                    folder: 'emails',
+                    filename: `verification_${userData.email.replace('@', '_at_').replace('.', '_dot_')}_${Date.now()}.txt`,
+                    content: emailBody,
+                    sendMail: 'true',
+                    to: userData.email,
+                    subject: emailSubject,
+                    body: emailBody,
+                    htmlBody: htmlBody
+                });
+
+                console.log('Verification email sent successfully');
+            } catch (error) {
+                console.error('Failed to send verification email:', error);
+                throw new Error('Failed to send verification email');
+            }
+        }
+
+        async function verifyEmail() {
+            const code = document.getElementById('verificationCode').value.trim();
+            
+            if (!appState.pendingVerification) {
+                showCustomAlert('No pending verification', 'error');
+                playSound('error');
+                return;
+            }
+
+            if (!code || code.length !== 6) {
+                showCustomAlert('Please enter a valid 6-digit code', 'error');
+                playSound('error');
+                return;
+            }
+
+            if (code === appState.pendingVerification.verificationCode) {
+                appState.pendingVerification.isEmailVerified = true;
+                
+                try {
+                    await saveUserData(appState.pendingVerification);
+                    
+                    currentUser = appState.pendingVerification;
+                    isGuestMode = false;
+                    appState.pendingVerification = null;
+                    
+                    hideEmailVerification();
+                    showMainApp();
+                    showCustomAlert(translations[appState.currentLanguage].verification_success, 'success');
+                    playSound('success');
+                } catch (error) {
+                    console.error('Failed to save verified user data:', error);
+                    showCustomAlert('Verification failed. Please try again.', 'error');
+                    playSound('error');
+                }
+            } else {
+                showCustomAlert(translations[appState.currentLanguage].invalid_verification_code, 'error');
+                playSound('error');
+            }
+        }
+
+        function startResendTimer() {
+            const resendButton = document.getElementById('resendButton');
+            const countdownElement = document.getElementById('resendCountdown');
+            
+            if (appState.resendTimer) {
+                clearInterval(appState.resendTimer);
+            }
+            
+            appState.resendCountdown = 60;
+            resendButton.classList.add('resend-disabled');
+            countdownElement.textContent = `(${appState.resendCountdown}s)`;
+            
+            appState.resendTimer = setInterval(() => {
+                appState.resendCountdown--;
+                countdownElement.textContent = `(${appState.resendCountdown}s)`;
+                
+                if (appState.resendCountdown <= 0) {
+                    clearInterval(appState.resendTimer);
+                    resendButton.classList.remove('resend-disabled');
+                    countdownElement.textContent = '';
+                }
+            }, 1000);
+        }
+
+        async function resendVerification() {
+            if (appState.resendCountdown > 0) {
+                return;
+            }
+
+            const resendButton = document.getElementById('resendButton');
+            resendButton.classList.add('resend-disabled');
+            resendButton.innerHTML = '<div class="spinner"></div> Sending...';
+
+            try {
+                if (appState.pendingVerification) {
+                    appState.pendingVerification.verificationCode = generateVerificationCode();
+                    await saveUserData(appState.pendingVerification);
+                    await sendVerificationEmail(appState.pendingVerification);
+                    showCustomAlert(translations[appState.currentLanguage].verification_resent, 'success');
+                    playSound('success');
+                }
+            } catch (error) {
+                console.error('Failed to resend verification:', error);
+                showCustomAlert('Failed to resend verification code', 'error');
+                playSound('error');
+            } finally {
+                startResendTimer();
+            }
+        }
+
+        // Enhanced data loading
+        async function loadUserData(field, value) {
+            try {
+                let filename;
+                if (field === 'email') {
+                    filename = value.replace('@', '_at_').replace('.', '_dot_') + '.json';
+                } else {
+                    return null;
+                }
+
+                console.log('Loading user data for:', filename);
+
+                const response = await fetch(`${config.apiEndpoint}?folder=users&filename=${filename}`, {
+                    method: 'GET'
+                });
+                
+                if (!response.ok) {
+                    console.log('User not found or network error');
+                    return null;
+                }
+                
+                const text = await response.text();
+                console.log('Load response:', text);
+                
+                if (text.includes('error') || text.includes('not found') || text.includes('Missing')) {
+                    return null;
+                }
+                
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Load error:', error);
+                return null;
+            }
+        }
+
+        async function saveUserData(userData) {
+            try {
+                console.log('Saving user data:', userData);
+                
+                const result = await makeApiCall({
+                    folder: 'users',
+                    filename: userData.email.replace('@', '_at_').replace('.', '_dot_') + '.json',
+                    content: JSON.stringify(userData, null, 2)
+                });
+                
+                console.log('Save result:', result);
+                return { status: 'success' };
+            } catch (error) {
+                console.error('Save error:', error);
+                throw error;
+            }
+        }
+
+        // Activity permission checking
+        function checkActivityPermission(activityType, diamondCost) {
+            if (!currentUser || !currentUser.isEmailVerified) {
+                showCustomAlert(translations[appState.currentLanguage].guest_earning_disabled, 'warning');
+                playSound('warning');
+                return false;
+            }
+
+            if (!currentUser.isActive) {
+                showCustomAlert(translations[appState.currentLanguage].account_deactivated, 'error');
+                playSound('error');
+                return false;
+            }
+
+            const today = new Date().toDateString();
+            const unlockField = activityType === 'games' ? 'dailyUnlockedGames' : 'dailyUnlockedVideos';
+            
+            // Reset daily unlock if new day
+            if (currentUser.lastUnlockDate !== today) {
+                currentUser.dailyUnlockedGames = false;
+                currentUser.dailyUnlockedVideos = false;
+                currentUser.lastUnlockDate = today;
+            }
+
+            // Check if already unlocked today
+if (currentUser[unlockField] || (activityType !== 'games' && activityType !== 'videos')) {
+    return true;
+}
+            
+            // Check if user has enough diamonds
+            if (currentUser.diamonds >= diamondCost) {
+                currentUser.diamonds -= diamondCost;
+                currentUser[unlockField] = true;
+                saveUserData(currentUser);
+                updateDisplay();
+                
+                const message = activityType === 'games' ? 
+                    translations[appState.currentLanguage].daily_unlocked_games : 
+                    translations[appState.currentLanguage].daily_unlocked_videos;
+                showCustomAlert(message, 'success');
+                playSound('success');
+                return true;
+            } else {
+                const message = activityType === 'games' ? 
+                    translations[appState.currentLanguage].insufficient_diamonds_games : 
+                    translations[appState.currentLanguage].insufficient_diamonds_videos;
+                showCustomAlert(message, 'warning');
+                playSound('warning');
+                return false;
+            }
+        }
+
+        // Enhanced activity system
+        function startActivity(type, url) {
+            if (appState.activityInProgress) {
+                showCustomAlert('Activity already in progress', 'warning');
+                playSound('warning');
+                return;
+            }
+
+            // Reset security state for activity
+            securityState.activityMonitoring = true;
+            securityState.pageBlurCount = 0;
+            securityState.tabSwitches = 0;
+            updateSecurityStatus();
+
+            appState.activityInProgress = true;
+            appState.activityStartTime = Date.now();
+            appState.activityEndTime = Date.now() + (30 * 1000);
+            appState.activityType = type;
+
+            // Disable buttons
+            document.querySelectorAll('.earning-btn').forEach(btn => {
+                btn.classList.add('button-disabled');
+            });
+
+            // Open activity page
+            try {
+                appState.activityWindow = window.open(url);
+                
+                appState.windowCheckInterval = setInterval(() => {
+                    if (appState.activityWindow && appState.activityWindow.closed && appState.activityInProgress) {
+                        handleSecurityViolation('window_closed_early');
+                        return;
+                    }
+                }, 1000);
+            } catch (e) {
+                console.error('Unable to open activity page:', e);
+                resetActivityState();
+                showCustomAlert('Failed to open activity page', 'error');
+                playSound('error');
+                return;
+            }
+
+            startActivityTimer();
+        }
+
+        function startActivityTimer() {
+            const duration = 30;
+            let timeLeft = duration;
+            
+            const activityTimer = document.getElementById('activityTimer');
+            activityTimer.classList.remove('hidden');
+            
+            // Clear any existing timer
+            if (appState.timer) {
+                clearInterval(appState.timer);
+                appState.timer = null;
+            }
+
+            appState.timer = setInterval(() => {
+                timeLeft--;
+                const progressPercent = (timeLeft / duration) * 100;
+                
+                document.getElementById('timerProgress').style.width = `${progressPercent}%`;
+                
+                const t = translations[appState.currentLanguage];
+                document.getElementById('timerText').textContent = `${t.time_remaining} ${timeLeft} ${t.seconds}`;
+                
+                // Play timer sound every 5 seconds
+                if (timeLeft > 0 && timeLeft % 5 === 0) {
+                    playSound('timer');
+                }
+                
+                // Security checks
+                if (appState.activityWindow && appState.activityWindow.closed) {
+                    handleSecurityViolation('window_closed_during_activity');
+                    return;
+                }
+                
+                if (securityState.suspiciousActions > 2) {
+                    handleSecurityViolation('too_many_violations');
+                    return;
+                }
+                
+                if (timeLeft <= 0) {
+                    completeActivity();
+                }
+            }, 1000);
+        }
+
+        function completeActivity() {
+            // Only proceed if we are in an activity
+            if (!appState.activityInProgress) {
+                return;
+            }
+
+            const timeSpent = Date.now() - appState.activityStartTime;
+            const minTimeRequired = 28000; // 28 seconds
+            
+            // Clear intervals
+            if (appState.timer) {
+                clearInterval(appState.timer);
+                appState.timer = null;
+            }
+            if (appState.windowCheckInterval) {
+                clearInterval(appState.windowCheckInterval);
+                appState.windowCheckInterval = null;
+            }
+            
+            // Capture the result
+            const success = timeSpent >= minTimeRequired && securityState.suspiciousActions < 3;
+            
+            // Reset activity state immediately to prevent re-entrancy
+            resetActivityState();
+            
+            if (success) {
+                if (currentUser && !isGuestMode) {
+                    addCoins(10);
+                    currentUser.activities++;
+                    currentUser.lastActivity = new Date().toISOString();
+                    saveUserData(currentUser);
+                } else if (isGuestMode) {
+                    showCustomAlert("Activity completed! Register to earn coins", 'info');
+                }
+                
+                if (appState.activityWindow && !appState.activityWindow.closed) {
+                    appState.activityWindow.close();
+                }
+                
+                showCustomAlert(translations[appState.currentLanguage].activity_completed, 'success');
+                playSound('success');
+            } else {
+                showCustomAlert(translations[appState.currentLanguage].cheat_detected, 'error');
+                playSound('error');
+            }
+        }
+
+        function resetActivityState() {
+            if (appState.timer) {
+                clearInterval(appState.timer);
+                appState.timer = null;
+            }
+            if (appState.windowCheckInterval) {
+                clearInterval(appState.windowCheckInterval);
+                appState.windowCheckInterval = null;
+            }
+            
+            appState.activityInProgress = false;
+            securityState.activityMonitoring = false;
+            appState.activityEndTime = 0;
+            appState.activityWindow = null;
+            appState.activityType = '';
+            
+            const activityTimer = document.getElementById('activityTimer');
+            activityTimer.classList.add('hidden');
+            
+            document.querySelectorAll('.earning-btn').forEach(btn => {
+                btn.classList.remove('button-disabled');
+            });
+        }
+
+        function addCoins(amount) {
+            // Enhanced security: Prevent automatic coin addition
+            const now = Date.now();
+            if (now - appState.lastCoinAddition < 30000) {
+                securityState.coinIncrementAttempts++;
+                if (securityState.coinIncrementAttempts > 2) {
+                    handleSecurityViolation('coin_cheating_detected');
+                    showCustomAlert(translations[appState.currentLanguage].coin_cheat_detected, 'error');
+                    playSound('error');
+                    return;
+                }
+            }
+            
+            if (!currentUser) return;
+
+            currentUser.coins += amount;
+            appState.lastCoinAddition = now;
+            
+            // Convert coins to earnings
+            if (currentUser.coins >= 1000) {
+                const newTaka = Math.floor(currentUser.coins / 1000);
+                currentUser.earnings += newTaka;
+                currentUser.coins = currentUser.coins % 1000;
+            }
+
+            // Coin animation
+            const coinIcon = document.querySelector('.coin-icon');
+            if (coinIcon) {
+                coinIcon.classList.add('coin-bounce');
+                setTimeout(() => coinIcon.classList.remove('coin-bounce'), 600);
+            }
+
+            // Create floating coins
+            for (let i = 0; i < Math.min(amount, 5); i++) {
+                setTimeout(() => createFloatingReward('💰', '#fbbf24'), i * 100);
+            }
+
+            // Play coin sound
+            playSound('coin');
+
+            updateDisplay();
+        }
+
+        function addDiamonds(amount) {
+            if (!currentUser) return;
+
+            currentUser.diamonds += amount;
+
+            // Create floating diamonds
+            for (let i = 0; i < amount; i++) {
+                setTimeout(() => createFloatingReward('💎', '#06b6d4'), i * 100);
+            }
+
+            // Play coin sound for diamonds as well
+            playSound('coin');
+
+            updateDisplay();
+            updateGameButtonStates();
+        }
+
+        function createFloatingReward(icon, color) {
+            const reward = document.createElement('div');
+            reward.innerHTML = icon;
+            reward.className = 'floating-reward';
+            reward.style.color = color;
+            reward.style.left = Math.random() * window.innerWidth + 'px';
+            reward.style.top = window.innerHeight * 0.8 + 'px';
+            document.body.appendChild(reward);
+            
+            setTimeout(() => {
+                if (document.body.contains(reward)) {
+                    document.body.removeChild(reward);
+                }
+            }, 2000);
+        }
+
+        function playSound(type) {
+            try {
+                if (!audioEnabled) return;
+                
+                const sound = document.getElementById(`${type}Sound`);
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.log('Sound play failed:', e));
+                }
+            } catch (error) {
+                console.error('Error playing sound:', error);
+            }
+        }
+
+        async function shareApp() {
+            if (isGuestMode) {
+                // Allow guest sharing but no rewards
+                const shareText = appState.currentLanguage === 'bn' ? 
+                    `কয়েন আর্নার প্রো - গেম খেলে টাকা জিতুন!\n` :
+                    `Coin Earner Pro - Earn Money Playing Games!\n`;
+                
+                const shareUrl = window.location.href;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Coin Earner Pro',
+                        text: shareText,
+                        url: shareUrl
+                    });
+                } else {
+                    copyToClipboard(shareText + shareUrl);
+                }
+                return;
+            }
+
+            if (!currentUser || !currentUser.isEmailVerified) {
+                showCustomAlert(translations[appState.currentLanguage].guest_earning_disabled, 'warning');
+                playSound('warning');
+                return;
+            }
+
+            const shareText = appState.currentLanguage === 'bn' ? 
+                `কয়েন আর্নার প্রো এ যোগ দিন! আমার রেফারেল কোড: ${currentUser.referralCode}\nগেম খেলে টাকা জিতুন!\n` :
+                `Join Coin Earner Pro! My referral code: ${currentUser.referralCode}\nEarn money playing games!\n`;
+            
+            const shareUrl = window.location.href + `?ref=${currentUser.referralCode}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Coin Earner Pro',
+                    text: shareText,
+                    url: shareUrl
+                }).then(() => {
+                    awardShareBonus();
+                }).catch(() => {
+                    copyToClipboard(shareText + shareUrl);
+                    awardShareBonus();
+                });
+            } else {
+                copyToClipboard(shareText + shareUrl);
+                awardShareBonus();
+            }
+        }
+
+        function awardShareBonus() {
+            addDiamonds(2);
+            currentUser.lastActivity = new Date().toISOString();
+            saveUserData(currentUser);
+            showCustomAlert(translations[appState.currentLanguage].share_earned, 'success');
+            playSound('success');
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCustomAlert('Link copied to clipboard!', 'success');
+                    playSound('success');
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCustomAlert('Link copied to clipboard!', 'success');
+                playSound('success');
+            }
+        }
+
+        async function withdrawEarnings() {
+            if (isGuestMode || !currentUser) {
+                showCustomAlert(translations[appState.currentLanguage].guest_earning_disabled, 'warning');
+                playSound('warning');
+                return;
+            }
+
+            if (currentUser.earnings < 20) {
+                showCustomAlert(translations[appState.currentLanguage].insufficient_balance, 'warning');
+                playSound('warning');
+                return;
+            }
+
+            const t = translations[appState.currentLanguage];
+            const message = t.withdraw_confirm.replace('{amount}', formatCurrency(currentUser.earnings));
+            
+            showCustomConfirm(message, (confirmed) => {
+                if (confirmed) {
+                    const whatsappMessage = `Withdraw: ${formatCurrency(currentUser.earnings)}\nName: ${currentUser.name}\nEmail: ${currentUser.email}\nMobile: ${currentUser.mobile}\nAddress: ${currentUser.address || 'Not provided'}\nReferral Code: ${currentUser.referralCode}\nTotal Activities: ${currentUser.activities}`;
+                    const whatsappUrl = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                    
+                    window.open(whatsappUrl, '_blank');
+                    
+                    // Reset user data after withdrawal
+                    currentUser.coins = 0;
+                    currentUser.diamonds = 0;
+                    currentUser.earnings = 0;
+                    currentUser.activities = 0;
+                    currentUser.dailyUnlockedGames = false;
+                    currentUser.dailyUnlockedVideos = false;
+                    currentUser.lastActivity = new Date().toISOString();
+                    saveUserData(currentUser);
+                    updateDisplay();
+                    updateGameButtonStates();
+                    
+                    showCustomAlert(t.withdraw_success, 'success');
+                    playSound('success');
+                }
+            });
+        }
+
+        // UI and display functions
+        function showMainApp() {
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            const userGreeting = document.getElementById('userGreeting');
+            const guestNotice = document.getElementById('guestNotice');
+            const verificationNotice = document.getElementById('verificationNotice');
+            const inactiveNotice = document.getElementById('inactiveNotice');
+            const userOnlySection = document.getElementById('userOnlySection');
+            const authButtons = document.getElementById('authButtons');
+            const referralCode = document.getElementById('referralCode');
+            
+            if (isGuestMode) {
+                userGreeting.textContent = translations[appState.currentLanguage].guest_mode_title;
+                guestNotice.classList.remove('hidden');
+                verificationNotice.classList.add('hidden');
+                inactiveNotice.classList.add('hidden');
+                userOnlySection.style.display = 'none';
+                authButtons.innerHTML = `
+                    <button onclick="showLoginModal()" class="glass text-white px-4 py-2 rounded-xl hover:bg-white/20 transition-all">
+                        <i class="fas fa-sign-in-alt mr-1"></i>
+                        <span data-translate="login">Login</span>
+                    </button>
+                `;
+            } else if (currentUser) {
+                userGreeting.textContent = `Welcome, ${currentUser.name}`;
+                guestNotice.classList.add('hidden');
+                userOnlySection.style.display = 'grid';
+                referralCode.textContent = currentUser.referralCode;
+                
+                if (!currentUser.isEmailVerified) {
+                    verificationNotice.classList.remove('hidden');
+                    inactiveNotice.classList.add('hidden');
+                } else if (!currentUser.isActive) {
+                    verificationNotice.classList.add('hidden');
+                    inactiveNotice.classList.remove('hidden');
+                } else {
+                    verificationNotice.classList.add('hidden');
+                    inactiveNotice.classList.add('hidden');
+                }
+                
+                authButtons.innerHTML = `
+                    <button onclick="logout()" class="glass text-white px-4 py-2 rounded-xl hover:bg-white/20 transition-all">
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        <span data-translate="logout">Logout</span>
+                    </button>
+                `;
+            }
+            
+            updateDisplay();
+            updateGameButtonStates();
+            setLanguage(appState.currentLanguage);
+        }
+
+        function updateDisplay() {
+            const elements = {
+                coinCount: document.getElementById('coinCount'),
+                diamondCount: document.getElementById('diamondCount'),
+                earnings: document.getElementById('earnings'),
+                activitiesCount: document.getElementById('activitiesCount'),
+                referralCount: document.getElementById('referralCount'),
+                progressBar: document.getElementById('progressBar'),
+                progressText: document.getElementById('progressText'),
+                withdrawableAmount: document.getElementById('withdrawableAmount'),
+                currentDiamonds: document.getElementById('currentDiamonds')
+            };
+
+            if (currentUser) {
+                elements.coinCount.textContent = formatNumber(currentUser.coins);
+                elements.diamondCount.textContent = formatNumber(currentUser.diamonds);
+                elements.earnings.textContent = formatCurrency(currentUser.earnings);
+                elements.activitiesCount.textContent = formatNumber(currentUser.activities);
+                elements.referralCount.textContent = formatNumber(currentUser.referrals);
+
+                const coinsToNextTaka = currentUser.coins % 1000;
+                const progressPercent = (coinsToNextTaka / 1000) * 100;
+                elements.progressBar.style.width = `${progressPercent}%`;
+                elements.progressText.textContent = `${coinsToNextTaka}/1000 coins`;
+
+                elements.withdrawableAmount.textContent = formatCurrency(currentUser.earnings);
+                if (elements.currentDiamonds) {
+                    elements.currentDiamonds.textContent = currentUser.diamonds;
+                }
+            } else {
+                // Guest mode - show zeros
+                Object.values(elements).forEach(el => {
+                    if (el && (el.id === 'earnings' || el.id === 'withdrawableAmount')) {
+                        el.textContent = formatCurrency(0);
+                    } else if (el && el.id === 'progressText') {
+                        el.textContent = '0/1000 coins';
+                    } else if (el && el.id === 'progressBar') {
+                        el.style.width = '0%';
+                    } else if (el) {
+                        el.textContent = '0';
+                    }
+                });
+            }
+        }
+
+        function updateGameButtonStates() {
+            const gamesBtn = document.getElementById('gamesBtn');
+            const videosBtn = document.getElementById('videosBtn');
+            const unlockNotice = document.getElementById('unlockNotice');
+
+            if (isGuestMode || !currentUser || !currentUser.isEmailVerified) {
+                unlockNotice.classList.add('hidden');
+                gamesBtn.classList.remove('button-locked');
+                videosBtn.classList.remove('button-locked');
+                return;
+            }
+
+            const today = new Date().toDateString();
+            
+            if (currentUser.lastUnlockDate !== today) {
+                currentUser.dailyUnlockedGames = false;
+                currentUser.dailyUnlockedVideos = false;
+                currentUser.lastUnlockDate = today;
+            }
+
+            const needsGameUnlock = !currentUser.dailyUnlockedGames;
+            const needsVideoUnlock = !currentUser.dailyUnlockedVideos;
+            const hasGameDiamonds = currentUser.diamonds >= 10;
+            const hasVideoDiamonds = currentUser.diamonds >= 50;
+
+            if ((needsGameUnlock && !hasGameDiamonds) || (needsVideoUnlock && !hasVideoDiamonds)) {
+                unlockNotice.classList.remove('hidden');
+            } else {
+                unlockNotice.classList.add('hidden');
+            }
+
+            if (needsGameUnlock && !hasGameDiamonds) {
+                gamesBtn.classList.add('button-locked');
+            } else {
+                gamesBtn.classList.remove('button-locked');
+            }
+
+            if (needsVideoUnlock && !hasVideoDiamonds) {
+                videosBtn.classList.add('button-locked');
+            } else {
+                videosBtn.classList.remove('button-locked');
+            }
+        }
+
+        function formatCurrency(amount) {
+            const bdtAmount = amount.toFixed(2);
+            return appState.currentLanguage === 'bn' ? `${bdtAmount} টাকা` : `${bdtAmount} BDT`;
+        }
+
+        function formatNumber(num) {
+            return appState.currentLanguage === 'bn' ? num.toLocaleString('bn-BD') : num.toString();
+        }
+
+        function generateReferralCode() {
+            return 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase() + Date.now().toString().slice(-3);
+        }
+
+        function detectAndSetLanguage() {
+            const userLanguage = navigator.language || navigator.userLanguage;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            if (timezone.includes('Dhaka') || userLanguage.includes('bn')) {
+                appState.currentLanguage = 'bn';
+            } else {
+                appState.currentLanguage = 'en';
+            }
+            
+            setLanguage(appState.currentLanguage);
+        }
+
+        function setLanguage(lang) {
+            appState.currentLanguage = lang;
+            document.getElementById('languageSelector').value = lang;
+            document.documentElement.lang = lang;
+            
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        function checkReferralCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            if (refCode) {
+                document.getElementById('regReferral').value = refCode;
+                document.getElementById('registrationModal').classList.remove('hidden');
+            }
+        }
+
+        // Modal functions
+        function showLoginModal() {
+            document.getElementById('registrationModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function showRegistrationModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('registrationModal').classList.remove('hidden');
+        }
+
+        function hideAuthModals() {
+            document.getElementById('registrationModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function showEmailVerification() {
+            document.getElementById('emailVerificationModal').classList.remove('hidden');
+            startResendTimer();
+        }
+
+        function hideEmailVerification() {
+            document.getElementById('emailVerificationModal').classList.add('hidden');
+            if (appState.resendTimer) {
+                clearInterval(appState.resendTimer);
+                appState.resendTimer = null;
+            }
+        }
+
+        function showCustomAlert(message, type = 'info') {
+            const alertIcon = document.getElementById('alertIcon');
+            const alertMessage = document.getElementById('alertMessage');
+            const customAlert = document.getElementById('customAlert');
+            
+            alertMessage.textContent = message;
+            
+            switch(type) {
+                case 'success':
+                    alertIcon.className = 'fas fa-check-circle text-5xl mb-4 text-green-400';
+                    playSound('success');
+                    break;
+                case 'error':
+                    alertIcon.className = 'fas fa-exclamation-circle text-5xl mb-4 text-red-400';
+                    playSound('error');
+                    break;
+                case 'warning':
+                    alertIcon.className = 'fas fa-exclamation-triangle text-5xl mb-4 text-yellow-400';
+                    playSound('warning');
+                    break;
+                default:
+                    alertIcon.className = 'fas fa-info-circle text-5xl mb-4 text-blue-400';
+            }
+            
+            customAlert.classList.remove('hidden');
+        }
+
+        function hideCustomAlert() {
+            document.getElementById('customAlert').classList.add('hidden');
+        }
+
+        function showCustomConfirm(message, callback) {
+            document.getElementById('confirmMessage').textContent = message;
+            confirmCallback = callback;
+            document.getElementById('customConfirm').classList.remove('hidden');
+        }
+
+        function hideCustomConfirm(result) {
+            document.getElementById('customConfirm').classList.add('hidden');
+            if (confirmCallback) {
+                confirmCallback(result);
+                confirmCallback = null;
+            }
+        }
+
+        function enterGuestMode() {
+            isGuestMode = true;
+            currentUser = null;
+            hideAuthModals();
+            showMainApp();
+        }
+
+        function logout() {
+            if (appState.activityInProgress) {
+                handleSecurityViolation('logout_during_activity');
+            }
+            
+            currentUser = null;
+            isGuestMode = false;
+            
+            // Clear stored login
+            localStorage.removeItem('rememberedLogin');
+            
+            document.getElementById('mainApp').classList.add('hidden');
+            showLoginModal();
+        }
+
+        // Dark mode support
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Global functions for onclick handlers
+        window.showRegistrationModal = showRegistrationModal;
+        window.showLoginModal = showLoginModal;
+        window.hideCustomAlert = hideCustomAlert;
+        window.hideCustomConfirm = hideCustomConfirm;
+        window.logout = logout;
+        window.enterGuestMode = enterGuestMode;
+        window.shareApp = shareApp;
+        window.withdrawEarnings = withdrawEarnings;
+        window.showEmailVerification = showEmailVerification;
+        window.verifyEmail = verifyEmail;
+        window.resendVerification = resendVerification;
+
+        // Prevent right-click and implement additional security
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        window.addEventListener('beforeunload', (e) => {
+            if (appState.activityInProgress) {
+                e.preventDefault();
+                e.returnValue = 'Activity in progress. Leaving will cancel it.';
+                return 'Activity in progress. Leaving will cancel it.';
+            }
+        });
+    </script>
+</body>
+</html>
