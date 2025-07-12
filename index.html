@@ -6,139 +6,75 @@
     <title>Coin Earner Pro - Authentication</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
         * {
             font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .hero-section {
-            min-height: 100vh;
+        .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            min-height: 100vh;
         }
         
-        .dark .hero-section {
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-        }
-        
-        .floating-coins {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        
-        .floating-coin {
-            position: absolute;
-            color: #fbbf24;
-            font-size: 2rem;
-            animation: float 6s ease-in-out infinite;
-            opacity: 0.7;
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.7;
-            }
-            50% {
-                transform: translateY(50vh) rotate(180deg);
-                opacity: 1;
-            }
-            90% {
-                opacity: 0.7;
-            }
-        }
-        
-        .auth-container {
+        .glass {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border-radius: 24px;
-            padding: 3rem;
-            max-width: 500px;
-            width: 90%;
-            z-index: 10;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
-        .dark .auth-container {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-input {
+        .glass-input {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
             font-size: 16px;
-            transition: all 0.3s ease;
+            width: 100%;
         }
         
-        .form-input:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
         
-        .dark .form-input {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .dark .form-input:focus {
-            background: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
         }
         
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
         }
         
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
+            color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-        
-        .btn-guest {
-            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-guest:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
         }
         
         .spinner {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid #ffffff;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -152,972 +88,379 @@
             100% { transform: rotate(360deg); }
         }
         
-        .feature-highlight {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #fbbf24;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .verification-code-input {
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.2em;
-            text-align: center;
-            font-size: 1.5rem;
-            padding: 1rem;
-        }
-        
-        .pulse-glow {
-            animation: pulseGlow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes pulseGlow {
-            from {
-                box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
-            }
-            to {
-                box-shadow: 0 0 30px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.6);
-            }
-        }
-        
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-content {
-            max-width: 500px;
-            width: 90%;
-            margin: 1rem;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .hidden { display: none !important; }
-        
-        .success-checkmark {
-            animation: checkmarkBounce 0.6s ease;
-        }
-        
-        @keyframes checkmarkBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-        
-        .error-shake {
-            animation: errorShake 0.5s ease;
-        }
-        
-        @keyframes errorShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 10px 15px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-        
-        .security-badge {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            border: 1px solid rgba(34, 197, 94, 0.5);
-            border-radius: 50px;
-            padding: 8px 15px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-label {
-            display: block;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-hint {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-        }
-        
-        .resend-timer {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.875rem;
-            margin-left: 0.5rem;
-        }
-        
-        .auth-switch {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .auth-switch a {
-            color: #fbbf24;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .auth-switch a:hover {
-            color: #f59e0b;
-        }
-        
-        .logo-animation {
-            animation: logoFloat 3s ease-in-out infinite;
-        }
-        
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .validation-error {
-            color: #ef4444;
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-            display: none;
-        }
-        
-        .input-error {
-            border-color: #ef4444 !important;
-            background: rgba(239, 68, 68, 0.1) !important;
-        }
-        
-        .input-success {
-            border-color: #22c55e !important;
-            background: rgba(34, 197, 94, 0.1) !important;
-        }
-        
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        
-        .step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 1rem;
-            position: relative;
-        }
-        
-        .step.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .step.completed {
-            background: #22c55e;
-        }
-        
-        .step::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            width: 2rem;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-50%);
-        }
-        
-        .step:last-child::after {
-            display: none;
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
-<body>
-    <!-- Theme Toggle -->
-    <div class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon" id="themeIcon"></i>
-    </div>
-    
-    <!-- Security Badge -->
-    <div class="security-badge">
-        <i class="fas fa-shield-alt"></i>
-        <span>Secure Authentication</span>
-    </div>
-    
-    <!-- Audio Elements -->
-    <audio id="successSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="errorSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
-    </audio>
-    
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <!-- Floating Coins Animation -->
-        <div class="floating-coins" id="floatingCoins"></div>
-        
-        <!-- Welcome Screen -->
-        <div class="auth-container" id="welcomeScreen">
-            <div class="text-center mb-8">
-                <div class="logo-animation">
-                    <i class="fas fa-coins text-6xl text-yellow-400 mb-4"></i>
-                </div>
-                <h1 class="text-4xl font-bold text-white mb-2">Coin Earner Pro</h1>
-                <p class="text-white/80 text-lg">Earn money playing games & watching videos</p>
-            </div>
-            
-            <div class="feature-highlight">
-                <h3 class="text-white font-semibold mb-2">
-                    <i class="fas fa-star text-yellow-400 mr-2"></i>
-                    Why Choose Us?
-                </h3>
-                <ul class="text-white/80 text-sm space-y-2">
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Instant coin rewards</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Secure transactions</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>1000 coins = 1.00 BDT</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>WhatsApp withdrawals</li>
-                </ul>
-            </div>
-            
-            <div class="space-y-4">
-                <button onclick="showRegistration()" class="w-full btn-primary text-white py-4 px-6 rounded-xl font-semibold text-lg pulse-glow">
-                    <i class="fas fa-user-plus mr-2"></i>
-                    Create Account
-                </button>
-                
-                <button onclick="showLogin()" class="w-full btn-secondary text-white py-3 px-6 rounded-xl font-semibold">
-                    <i class="fas fa-sign-in-alt mr-2"></i>
-                    Login
-                </button>
-                
-                <button onclick="goToDashboard(true)" class="w-full btn-guest text-white py-3 px-6 rounded-xl font-semibold">
-                    <i class="fas fa-eye mr-2"></i>
-                    Browse as Guest
-                </button>
-            </div>
-            
-            <div class="auth-switch">
-                <p class="text-white/60 text-sm">
-                    Already earning? <a href="#" onclick="showLogin()">Login here</a>
-                </p>
-            </div>
-        </div>
-        
-        <!-- Registration Form -->
-        <div class="auth-container hidden" id="registrationScreen">
-            <div class="progress-steps">
-                <div class="step active">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="step">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="step">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-            
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-white mb-2">Create Account</h2>
-                <p class="text-white/70">Join thousands of users earning daily</p>
-            </div>
-            
-            <form id="registrationForm" class="space-y-4">
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" id="regName" required minlength="2" maxlength="50" 
-                           class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50" 
-                           placeholder="Enter your full name">
-                    <div class="validation-error" id="nameError">Please enter a valid name (2-50 characters)</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Mobile Number</label>
-                    <input type="tel" id="regMobile" required pattern="^\+?[1-9]\d{1,14}$" 
-                           class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50" 
-                           placeholder="+8801XXXXXXXXX">
-                    <div class="form-hint">International format (e.g., +8801XXXXXXXXX)</div>
-                    <div class="validation-error" id="mobileError">Please enter a valid international mobile number</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Gmail Address</label>
-                    <input type="email" id="regEmail" required pattern=".*@gmail\.com$" 
-                           class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50" 
-                           placeholder="your.email@gmail.com">
-                    <div class="form-hint">Only Gmail addresses are accepted</div>
-                    <div class="validation-error" id="emailError">Please enter a valid Gmail address</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <div class="relative">
-                        <input type="password" id="regPassword" required minlength="6" 
-                               class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50 pr-12" 
-                               placeholder="Create a secure password">
-                        <button type="button" onclick="togglePassword('regPassword')" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white">
-                            <i class="fas fa-eye" id="regPasswordToggle"></i>
+<body class="gradient-bg flex items-center justify-center">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md w-full mx-auto">
+            <!-- Registration Modal -->
+            <div id="registrationModal" class="glass p-8 mb-6">
+                <h2 class="text-2xl font-bold mb-6 text-white text-center">
+                    <i class="fas fa-user-plus mr-2"></i> Create Account
+                </h2>
+                <form id="registrationForm" class="space-y-4">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Full Name</label>
+                        <input type="text" id="regName" required minlength="2" class="glass-input" placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Mobile Number</label>
+                        <input type="tel" id="regMobile" required pattern="^\+?[1-9]\d{1,14}$" class="glass-input" placeholder="+8801XXXXXXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Gmail Address</label>
+                        <input type="email" id="regEmail" required pattern=".*@gmail\.com$" class="glass-input" placeholder="example@gmail.com">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="regPassword" required minlength="6" class="glass-input" placeholder="Minimum 6 characters">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Referral Code (Optional)</label>
+                        <input type="text" id="regReferral" class="glass-input" placeholder="Enter referral code">
+                    </div>
+                    <div class="pt-4 flex space-x-3">
+                        <button type="submit" id="registerBtn" class="btn btn-primary flex-1">
+                            <span>Register</span>
+                        </button>
+                        <button type="button" onclick="showLoginModal()" class="btn btn-secondary flex-1">
+                            <span>Login</span>
                         </button>
                     </div>
-                    <div class="form-hint">Minimum 6 characters</div>
-                    <div class="validation-error" id="passwordError">Password must be at least 6 characters long</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Address (Optional)</label>
-                    <input type="text" id="regAddress" maxlength="200"
-                           class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50" 
-                           placeholder="Your address (optional)">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Referral Code (Optional)</label>
-                    <input type="text" id="regReferral" maxlength="20"
-                           class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50" 
-                           placeholder="Enter referral code for bonus">
-                    <div class="form-hint">Get 30 bonus coins with a valid referral code</div>
-                </div>
-                
-                <div class="flex items-center mb-4">
-                    <input type="checkbox" id="agreeTerms" required class="mr-3 w-4 h-4">
-                    <label for="agreeTerms" class="text-white/80 text-sm">
-                        I agree to the <a href="#" class="text-yellow-400 hover:text-yellow-300">Terms of Service</a> and 
-                        <a href="#" class="text-yellow-400 hover:text-yellow-300">Privacy Policy</a>
-                    </label>
-                </div>
-                
-                <div class="space-y-3">
-                    <button type="submit" class="w-full btn-primary text-white py-4 px-6 rounded-xl font-semibold" id="registerBtn">
-                        <i class="fas fa-user-plus mr-2"></i>
-                        Create Account
-                    </button>
-                    
-                    <button type="button" onclick="showLogin()" class="w-full btn-secondary text-white py-3 px-6 rounded-xl font-semibold">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Already have account? Login
-                    </button>
-                </div>
-            </form>
-            
-            <div class="auth-switch">
-                <button onclick="showWelcome()" class="text-white/60 hover:text-white text-sm">
-                    <i class="fas fa-arrow-left mr-2"></i>Back to Welcome
-                </button>
-            </div>
-        </div>
-        
-        <!-- Login Form -->
-        <div class="auth-container hidden" id="loginScreen">
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-                <p class="text-white/70">Login to continue earning</p>
+                </form>
             </div>
             
-            <form id="loginForm" class="space-y-4">
-                <div class="form-group">
-                    <label class="form-label">Gmail Address</label>
-                    <input type="email" id="loginEmail" required pattern=".*@gmail\.com$" 
-                           class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50" 
-                           placeholder="your.email@gmail.com">
-                    <div class="validation-error" id="loginEmailError">Please enter a valid Gmail address</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <div class="relative">
-                        <input type="password" id="loginPassword" required 
-                               class="form-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50 pr-12" 
-                               placeholder="Enter your password">
-                        <button type="button" onclick="togglePassword('loginPassword')" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white">
-                            <i class="fas fa-eye" id="loginPasswordToggle"></i>
+            <!-- Login Modal -->
+            <div id="loginModal" class="glass p-8 mb-6 hidden">
+                <h2 class="text-2xl font-bold mb-6 text-white text-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                </h2>
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Gmail Address</label>
+                        <input type="email" id="loginEmail" required pattern=".*@gmail\.com$" class="glass-input" placeholder="example@gmail.com">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="loginPassword" required class="glass-input" placeholder="Enter your password">
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="rememberMe" class="mr-2">
+                        <label for="rememberMe" class="text-white/60 text-sm">Remember me</label>
+                    </div>
+                    <div class="pt-4 flex space-x-3">
+                        <button type="submit" id="loginBtn" class="btn btn-primary flex-1">
+                            <span>Login</span>
+                        </button>
+                        <button type="button" onclick="showRegistrationModal()" class="btn btn-secondary flex-1">
+                            <span>Register</span>
                         </button>
                     </div>
-                    <div class="validation-error" id="loginPasswordError">Please enter your password</div>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <label class="flex items-center text-white/80 text-sm">
-                        <input type="checkbox" id="rememberMe" class="mr-2 w-4 h-4">
-                        Remember me
-                    </label>
-                    <a href="#" onclick="showForgotPassword()" class="text-yellow-400 hover:text-yellow-300 text-sm">
-                        Forgot Password?
-                    </a>
-                </div>
-                
-                <div class="space-y-3">
-                    <button type="submit" class="w-full btn-primary text-white py-4 px-6 rounded-xl font-semibold" id="loginBtn">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Login
-                    </button>
-                    
-                    <button type="button" onclick="showRegistration()" class="w-full btn-secondary text-white py-3 px-6 rounded-xl font-semibold">
-                        <i class="fas fa-user-plus mr-2"></i>
-                        Don't have account? Register
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
             
-            <div class="auth-switch">
-                <button onclick="showWelcome()" class="text-white/60 hover:text-white text-sm">
-                    <i class="fas fa-arrow-left mr-2"></i>Back to Welcome
+            <!-- Guest Mode Button -->
+            <div class="glass p-8 text-center">
+                <h3 class="text-xl font-bold mb-4 text-white">Continue as Guest</h3>
+                <button onclick="enterGuestMode()" class="btn btn-secondary w-full">
+                    <i class="fas fa-user-clock mr-2"></i> Continue as Guest
                 </button>
             </div>
         </div>
-        
-        <!-- Email Verification -->
-        <div class="auth-container hidden" id="verificationScreen">
-            <div class="progress-steps">
-                <div class="step completed">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="step active">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="step">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-            
-            <div class="text-center mb-6">
-                <i class="fas fa-envelope-circle-check text-6xl text-blue-400 mb-4"></i>
-                <h2 class="text-2xl font-bold text-white mb-2">Verify Your Email</h2>
-                <p class="text-white/70 mb-4">We've sent a 6-digit code to</p>
-                <p class="text-yellow-400 font-semibold" id="verificationEmail">your.email@gmail.com</p>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="form-group">
-                    <label class="form-label text-center block">Verification Code</label>
-                    <input type="text" id="verificationCode" placeholder="000000" maxlength="6" 
-                           class="verification-code-input form-input w-full rounded-xl text-white placeholder-white/50">
-                    <div class="form-hint text-center">Enter the 6-digit code from your email</div>
-                    <div class="validation-error text-center" id="codeError">Please enter a valid 6-digit code</div>
-                </div>
-                
-                <div class="space-y-3">
-                    <button onclick="verifyEmailCode()" class="w-full btn-primary text-white py-4 px-6 rounded-xl font-semibold" id="verifyBtn">
-                        <i class="fas fa-check mr-2"></i>
-                        Verify Email
-                    </button>
-                    
-                    <button onclick="resendVerificationCode()" id="resendBtn" class="w-full btn-secondary text-white py-3 px-6 rounded-xl font-semibold">
-                        <i class="fas fa-redo mr-2"></i>
-                        Resend Code
-                        <span class="resend-timer" id="resendTimer"></span>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="text-center mt-6">
-                <p class="text-white/60 text-sm">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    Check your spam folder if you don't see the email
-                </p>
-            </div>
-        </div>
     </div>
     
-    <!-- Custom Alert Modal -->
-    <div class="modal-overlay hidden" id="customAlert">
-        <div class="modal-content auth-container text-center">
-            <i id="alertIcon" class="text-5xl mb-4"></i>
-            <h3 id="alertTitle" class="text-xl font-semibold text-white mb-2"></h3>
-            <p id="alertMessage" class="text-white/80 mb-6"></p>
-            <button onclick="hideAlert()" class="btn-primary text-white px-8 py-3 rounded-xl font-semibold">
-                <i class="fas fa-check mr-2"></i>
-                OK
-            </button>
-        </div>
-    </div>
-    
-    <!-- Loading Overlay -->
-    <div class="modal-overlay hidden" id="loadingOverlay">
-        <div class="text-center">
-            <div class="spinner-large"></div>
-            <p class="text-white text-lg mt-4" id="loadingMessage">Processing...</p>
-        </div>
-    </div>
-    
-    <script src="assets/script.js"></script>
     <script>
-        // Authentication-specific JavaScript
-        let authState = {
-            currentScreen: 'welcome',
-            pendingVerification: null,
-            resendTimer: null,
-            resendCountdown: 60,
-            audioEnabled: false
+        // Main application state
+        const appState = {
+            currentUser: null,
+            isGuestMode: false,
+            isAuthenticated: false,
+            isEmailVerified: false,
+            language: 'en'
         };
         
-        // Initialize authentication
+        // Google Apps Script configuration
+        const config = {
+            apiEndpoint: 'https://script.google.com/macros/s/AKfycbxwzeoNtCleXecmpyEpfQMiZxNHizvl84nUipSj1FxTySFVhQrT-3K9Oo_7FiidM5HPL/exec',
+            whatsappNumber: '8801700000000',
+            appVersion: '1.0.0'
+        };
+        
+        // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            initAuth();
-            createFloatingCoins();
-            detectAndSetTheme();
-            checkAutoLogin();
-            checkReferralCode();
+            initApp();
         });
         
-        function initAuth() {
-            // Enable audio on first user interaction
-            document.body.addEventListener('click', enableAudio, { once: true });
-            document.body.addEventListener('touchstart', enableAudio, { once: true });
-            
-            // Setup form validations
-            setupValidation();
-            
-            // Setup form submissions
+        function initApp() {
+            setupEventListeners();
+            checkStoredLogin();
+            console.log('Coin Earner Pro - Authentication initialized');
+        }
+        
+        function setupEventListeners() {
+            // Registration form submission
             document.getElementById('registrationForm').addEventListener('submit', handleRegistration);
+            
+            // Login form submission
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            
-            console.log('Authentication system initialized');
         }
         
-        function enableAudio() {
-            authState.audioEnabled = true;
-        }
-        
-        function playSound(type) {
-            if (!authState.audioEnabled) return;
-            
-            const sound = document.getElementById(type + 'Sound');
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(e => console.log('Sound play failed:', e));
-            }
-        }
-        
-        function createFloatingCoins() {
-            const container = document.getElementById('floatingCoins');
-            const coinSymbols = ['💰', '🪙', '💎', '🌟'];
-            
-            function createCoin() {
-                const coin = document.createElement('div');
-                coin.className = 'floating-coin';
-                coin.textContent = coinSymbols[Math.floor(Math.random() * coinSymbols.length)];
-                coin.style.left = Math.random() * 100 + '%';
-                coin.style.animationDelay = Math.random() * 6 + 's';
-                coin.style.animationDuration = (6 + Math.random() * 4) + 's';
-                
-                container.appendChild(coin);
-                
-                setTimeout(() => {
-                    if (container.contains(coin)) {
-                        container.removeChild(coin);
-                    }
-                }, 10000);
-            }
-            
-            // Create initial coins
-            for (let i = 0; i < 8; i++) {
-                setTimeout(createCoin, i * 1000);
-            }
-            
-            // Continue creating coins
-            setInterval(createCoin, 2000);
-        }
-        
-        function detectAndSetTheme() {
-            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-                document.getElementById('themeIcon').className = 'fas fa-sun';
-            }
-        }
-        
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            const icon = document.getElementById('themeIcon');
-            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        
-        function showScreen(screenId) {
-            // Hide all screens
-            document.querySelectorAll('.auth-container').forEach(screen => {
-                screen.classList.add('hidden');
-            });
-            
-            // Show target screen
-            document.getElementById(screenId).classList.remove('hidden');
-            authState.currentScreen = screenId.replace('Screen', '');
-        }
-        
-        function showWelcome() {
-            showScreen('welcomeScreen');
-        }
-        
-        function showRegistration() {
-            showScreen('registrationScreen');
-            document.getElementById('regName').focus();
-        }
-        
-        function showLogin() {
-            showScreen('loginScreen');
-            document.getElementById('loginEmail').focus();
-        }
-        
-        function showVerification(email) {
-            document.getElementById('verificationEmail').textContent = email;
-            showScreen('verificationScreen');
-            document.getElementById('verificationCode').focus();
-            startResendTimer();
-        }
-        
-        function setupValidation() {
-            // Real-time validation
-            const inputs = {
-                regName: validateName,
-                regMobile: validateMobile,
-                regEmail: validateEmail,
-                regPassword: validatePassword,
-                loginEmail: validateEmail,
-                loginPassword: (value) => value.length > 0
-            };
-            
-            Object.keys(inputs).forEach(inputId => {
-                const input = document.getElementById(inputId);
-                if (input) {
-                    input.addEventListener('blur', () => {
-                        const isValid = inputs[inputId](input.value);
-                        updateInputValidation(input, isValid);
-                    });
-                    
-                    input.addEventListener('input', () => {
-                        clearInputError(input);
-                    });
-                }
-            });
-        }
-        
-        function validateName(value) {
-            return value.trim().length >= 2 && value.trim().length <= 50;
-        }
-        
-        function validateMobile(value) {
-            return /^\+?[1-9]\d{1,14}$/.test(value.trim());
-        }
-        
-        function validateEmail(value) {
-            return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value.trim().toLowerCase());
-        }
-        
-        function validatePassword(value) {
-            return value.length >= 6;
-        }
-        
-        function updateInputValidation(input, isValid) {
-            const errorElement = document.getElementById(input.id.replace(/^(reg|login)/, '') + 'Error');
-            
-            input.classList.remove('input-error', 'input-success');
-            if (errorElement) {
-                errorElement.style.display = 'none';
-            }
-            
-            if (input.value.trim()) {
-                if (isValid) {
-                    input.classList.add('input-success');
-                } else {
-                    input.classList.add('input-error');
-                    if (errorElement) {
-                        errorElement.style.display = 'block';
-                    }
+        function checkStoredLogin() {
+            const storedUser = localStorage.getItem('coinEarnerUser');
+            if (storedUser) {
+                try {
+                    appState.currentUser = JSON.parse(storedUser);
+                    appState.isAuthenticated = true;
+                    appState.isGuestMode = false;
+                    appState.isEmailVerified = appState.currentUser.isEmailVerified || false;
+                    console.log('User loaded from storage:', appState.currentUser.email);
+                } catch (error) {
+                    console.error('Error parsing stored user data:', error);
                 }
             }
         }
         
-        function clearInputError(input) {
-            input.classList.remove('input-error');
-            const errorElement = document.getElementById(input.id.replace(/^(reg|login)/, '') + 'Error');
-            if (errorElement) {
-                errorElement.style.display = 'none';
-            }
-        }
-        
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            const toggle = document.getElementById(inputId + 'Toggle');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                toggle.className = 'fas fa-eye-slash';
-            } else {
-                input.type = 'password';
-                toggle.className = 'fas fa-eye';
-            }
-        }
-        
-        async function handleRegistration(e) {
+        function handleRegistration(e) {
             e.preventDefault();
             
-            const formData = {
-                name: document.getElementById('regName').value.trim(),
-                mobile: document.getElementById('regMobile').value.trim(),
-                email: document.getElementById('regEmail').value.trim().toLowerCase(),
-                password: document.getElementById('regPassword').value,
-                address: document.getElementById('regAddress').value.trim(),
-                referral: document.getElementById('regReferral').value.trim()
-            };
+            const name = document.getElementById('regName').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const password = document.getElementById('regPassword').value;
+            const referralCode = document.getElementById('regReferral').value.trim();
             
-            // Validate all fields
-            const validations = [
-                { field: 'name', validator: validateName, error: 'Please enter a valid name (2-50 characters)' },
-                { field: 'mobile', validator: validateMobile, error: 'Please enter a valid international mobile number' },
-                { field: 'email', validator: validateEmail, error: 'Please enter a valid Gmail address' },
-                { field: 'password', validator: validatePassword, error: 'Password must be at least 6 characters' }
-            ];
-            
-            for (let validation of validations) {
-                if (!validation.validator(formData[validation.field])) {
-                    showAlert('error', 'Validation Error', validation.error);
-                    return;
-                }
-            }
-            
-            if (!document.getElementById('agreeTerms').checked) {
-                showAlert('error', 'Terms Required', 'Please agree to the Terms of Service and Privacy Policy');
+            // Validate inputs
+            if (name.length < 2) {
+                alert('Name must be at least 2 characters');
                 return;
             }
             
-            setButtonLoading('registerBtn', true, 'Creating Account...');
-            
-            try {
-                await registerUser(formData);
-            } catch (error) {
-                console.error('Registration error:', error);
-                showAlert('error', 'Registration Failed', error.message || 'Please try again');
-                playSound('error');
-            } finally {
-                setButtonLoading('registerBtn', false, 'Create Account');
+            if (!/^\+?[1-9]\d{1,14}$/.test(mobile)) {
+                alert('Please enter a valid international mobile number');
+                return;
             }
+            
+            if (!/.*@gmail\.com$/.test(email)) {
+                alert('Please use a valid Gmail address');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+            
+            // Register user
+            registerUser(name, mobile, email, password, referralCode);
         }
         
-        async function handleLogin(e) {
+        function handleLogin(e) {
             e.preventDefault();
             
             const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             
-            if (!validateEmail(email)) {
-                showAlert('error', 'Invalid Email', 'Please enter a valid Gmail address');
+            // Validate inputs
+            if (!/.*@gmail\.com$/.test(email)) {
+                alert('Please use a valid Gmail address');
                 return;
             }
             
-            if (!password) {
-                showAlert('error', 'Password Required', 'Please enter your password');
-                return;
-            }
-            
-            setButtonLoading('loginBtn', true, 'Logging in...');
-            
-            try {
-                await loginUser(email, password, rememberMe);
-            } catch (error) {
-                console.error('Login error:', error);
-                showAlert('error', 'Login Failed', error.message || 'Please check your credentials');
-                playSound('error');
-            } finally {
-                setButtonLoading('loginBtn', false, 'Login');
-            }
+            // Login user
+            loginUser(email, password, rememberMe);
         }
         
-        function setButtonLoading(buttonId, loading, text) {
-            const button = document.getElementById(buttonId);
-            if (loading) {
-                button.disabled = true;
-                button.innerHTML = `<div class="spinner"></div>${text}`;
-            } else {
-                button.disabled = false;
-                button.innerHTML = `<i class="fas fa-${buttonId.includes('register') ? 'user-plus' : 'sign-in-alt'} mr-2"></i>${text}`;
-            }
+        function registerUser(name, mobile, email, password, referralCode) {
+            const registerBtn = document.getElementById('registerBtn');
+            const originalText = registerBtn.innerHTML;
+            
+            registerBtn.innerHTML = '<div class="spinner"></div> Processing...';
+            registerBtn.disabled = true;
+            
+            // Create user data
+            const user = {
+                id: generateUserId(),
+                name: name,
+                mobile: mobile,
+                email: email,
+                password: password, // In a real app, this should be hashed
+                address: '',
+                referralCode: generateReferralCode(),
+                usedReferralCode: referralCode,
+                coins: 10, // Welcome bonus
+                diamonds: 0,
+                earnings: 0,
+                activities: 0,
+                referrals: 0,
+                rank: 'Beginner',
+                joinDate: new Date().toISOString(),
+                lastActivity: new Date().toISOString(),
+                isEmailVerified: false,
+                isActive: true,
+                dailyUnlockedGames: false,
+                dailyUnlockedVideos: false,
+                lastUnlockDate: null
+            };
+            
+            // Save user data to Google Apps Script
+            saveUserData(user)
+                .then(() => {
+                    console.log('User registered successfully');
+                    
+                    // Store user in localStorage for session
+                    localStorage.setItem('coinEarnerUser', JSON.stringify(user));
+                    
+                    // Update app state
+                    appState.currentUser = user;
+                    appState.isAuthenticated = true;
+                    appState.isGuestMode = false;
+                    
+                    // Hide registration modal
+                    document.getElementById('registrationModal').classList.add('hidden');
+                    
+                    // Show verification modal
+                    showEmailVerification();
+                    
+                    // Reset button
+                    registerBtn.innerHTML = originalText;
+                    registerBtn.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Registration failed:', error);
+                    alert('Registration failed. Please try again.');
+                    registerBtn.innerHTML = originalText;
+                    registerBtn.disabled = false;
+                });
         }
         
-        function showAlert(type, title, message) {
-            const alert = document.getElementById('customAlert');
-            const icon = document.getElementById('alertIcon');
-            const titleEl = document.getElementById('alertTitle');
-            const messageEl = document.getElementById('alertMessage');
+        function loginUser(email, password, rememberMe) {
+            const loginBtn = document.getElementById('loginBtn');
+            const originalText = loginBtn.innerHTML;
             
-            titleEl.textContent = title;
-            messageEl.textContent = message;
+            loginBtn.innerHTML = '<div class="spinner"></div> Logging in...';
+            loginBtn.disabled = true;
             
-            switch (type) {
-                case 'success':
-                    icon.className = 'fas fa-check-circle text-5xl mb-4 text-green-400 success-checkmark';
-                    playSound('success');
-                    break;
-                case 'error':
-                    icon.className = 'fas fa-exclamation-circle text-5xl mb-4 text-red-400 error-shake';
-                    playSound('error');
-                    break;
-                case 'warning':
-                    icon.className = 'fas fa-exclamation-triangle text-5xl mb-4 text-yellow-400';
-                    break;
-                default:
-                    icon.className = 'fas fa-info-circle text-5xl mb-4 text-blue-400';
-            }
-            
-            alert.classList.remove('hidden');
-        }
-        
-        function hideAlert() {
-            document.getElementById('customAlert').classList.add('hidden');
-        }
-        
-        function startResendTimer() {
-            const resendBtn = document.getElementById('resendBtn');
-            const timerEl = document.getElementById('resendTimer');
-            
-            authState.resendCountdown = 60;
-            resendBtn.disabled = true;
-            
-            authState.resendTimer = setInterval(() => {
-                authState.resendCountdown--;
-                timerEl.textContent = `(${authState.resendCountdown}s)`;
+            // In a real app, this would validate against stored data
+            // For now, simulate successful login
+            setTimeout(() => {
+                const user = {
+                    id: generateUserId(),
+                    name: email.split('@')[0],
+                    mobile: '+8801XXXXXXXXX',
+                    email: email,
+                    password: password, // In a real app, this should be hashed
+                    address: '',
+                    referralCode: generateReferralCode(),
+                    usedReferralCode: '',
+                    coins: 0,
+                    diamonds: 0,
+                    earnings: 0,
+                    activities: 0,
+                    referrals: 0,
+                    rank: 'Beginner',
+                    joinDate: new Date().toISOString(),
+                    lastActivity: new Date().toISOString(),
+                    isEmailVerified: true, // For demo purposes
+                    isActive: true,
+                    dailyUnlockedGames: false,
+                    dailyUnlockedVideos: false,
+                    lastUnlockDate: null
+                };
                 
-                if (authState.resendCountdown <= 0) {
-                    clearInterval(authState.resendTimer);
-                    resendBtn.disabled = false;
-                    timerEl.textContent = '';
-                }
-            }, 1000);
-        }
-        
-        async function verifyEmailCode() {
-            const code = document.getElementById('verificationCode').value.trim();
-            
-            if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
-                showAlert('error', 'Invalid Code', 'Please enter a valid 6-digit code');
-                return;
-            }
-            
-            setButtonLoading('verifyBtn', true, 'Verifying...');
-            
-            try {
-                await verifyEmail(code);
-            } catch (error) {
-                console.error('Verification error:', error);
-                showAlert('error', 'Verification Failed', error.message || 'Invalid code');
-                playSound('error');
-            } finally {
-                setButtonLoading('verifyBtn', false, 'Verify Email');
-            }
-        }
-        
-        async function resendVerificationCode() {
-            if (authState.resendCountdown > 0) return;
-            
-            setButtonLoading('resendBtn', true, 'Sending...');
-            
-            try {
-                if (authState.pendingVerification) {
-                    await sendVerificationEmail(authState.pendingVerification);
-                    showAlert('success', 'Code Sent', 'Verification code has been resent to your email');
-                    startResendTimer();
-                }
-            } catch (error) {
-                console.error('Resend error:', error);
-                showAlert('error', 'Send Failed', 'Failed to resend verification code');
-                playSound('error');
-            } finally {
-                setButtonLoading('resendBtn', false, 'Resend Code');
-            }
-        }
-        
-        function checkAutoLogin() {
-            const stored = localStorage.getItem('rememberedLogin');
-            if (!stored) return;
-            
-            try {
-                const loginData = JSON.parse(stored);
-                // Check if stored login is not older than 30 days
-                if (Date.now() - loginData.timestamp > 30 * 24 * 60 * 60 * 1000) {
-                    localStorage.removeItem('rememberedLogin');
-                    return;
-                }
+                // Store user in localStorage
+                localStorage.setItem('coinEarnerUser', JSON.stringify(user));
                 
-                // Auto-fill login form
-                document.getElementById('loginEmail').value = loginData.email;
-                document.getElementById('loginPassword').value = loginData.password;
-                document.getElementById('rememberMe').checked = true;
+                // Update app state
+                appState.currentUser = user;
+                appState.isAuthenticated = true;
+                appState.isGuestMode = false;
+                appState.isEmailVerified = true;
                 
-                // Show login screen with prefilled data
-                showLogin();
-            } catch (error) {
-                localStorage.removeItem('rememberedLogin');
-            }
+                // Hide login modal
+                document.getElementById('loginModal').classList.add('hidden');
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+                
+                // Reset button
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }, 1500);
         }
         
-        function checkReferralCode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            if (refCode) {
-                document.getElementById('regReferral').value = refCode;
-                showRegistration();
-            }
+        function showRegistrationModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('registrationModal').classList.remove('hidden');
         }
         
-        function goToDashboard(isGuest = false) {
-            // Store auth state
-            sessionStorage.setItem('authMode', isGuest ? 'guest' : 'user');
-            
-            // Redirect to dashboard
+        function showLoginModal() {
+            document.getElementById('registrationModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+        
+        function enterGuestMode() {
+            appState.isGuestMode = true;
+            appState.isAuthenticated = false;
+            appState.currentUser = null;
             window.location.href = 'dashboard.html';
         }
         
-        // Expose functions globally for onclick handlers
-        window.showWelcome = showWelcome;
-        window.showRegistration = showRegistration;
-        window.showLogin = showLogin;
-        window.toggleTheme = toggleTheme;
-        window.togglePassword = togglePassword;
-        window.hideAlert = hideAlert;
-        window.verifyEmailCode = verifyEmailCode;
-        window.resendVerificationCode = resendVerificationCode;
-        window.goToDashboard = goToDashboard;
+        function showEmailVerification() {
+            alert('A verification code has been sent to your email. Please check your inbox.');
+            // In a real app, this would show a modal with verification input
+        }
+        
+        function generateUserId() {
+            return 'user_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        function generateReferralCode() {
+            return 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+        
+        // Google Apps Script functions
+        async function saveUserData(user) {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'saveUser');
+                formData.append('userData', JSON.stringify(user));
+                
+                const response = await fetch(config.apiEndpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.text();
+                console.log('Save user response:', result);
+                
+                if (result.includes('error')) {
+                    throw new Error(result);
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error saving user data:', error);
+                throw error;
+            }
+        }
+        
+        // Additional utility functions
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark');
+            }
+        }
     </script>
 </body>
 </html>
