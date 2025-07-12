@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Earner Pro - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .profile-bg {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .dark .profile-bg {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .glass-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+        
+        .profile-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 200%;
+            animation: avatarGlow 3s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes avatarGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .dark .form-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        
+        .badge-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+        }
+        
+        .badge-silver {
+            background: linear-gradient(135deg, #e5e7eb 0%, #9ca3af 100%);
+            color: #374151;
+        }
+        
+        .badge-bronze {
+            background: linear-gradient(135deg, #cd7c2f 0%, #a0522d 100%);
+            color: white;
+        }
+        
+        .security-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .security-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .activity-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-left: 1rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 1.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .referral-tree {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .level-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="profile-bg">
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-card mx-6 mt-6 p-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <a href="dashboard.html" class="text-white hover:text-yellow-400 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+            </div>
+            <h1 class="text-xl font-bold text-white">
+                <i class="fas fa-user text-blue-400 mr-2"></i>
+                Profile Management
+            </h1>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        <!-- Profile Header -->
+        <div class="glass-card p-8 mb-8 text-center">
+            <div class="profile-avatar" id="profileAvatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2" id="userName">Loading...</h2>
+            <div class="level-badge mb-4" id="userLevel">Level 1</div>
+            <p class="text-white/70" id="userEmail">user@gmail.com</p>
+            <div class="flex justify-center items-center mt-4 space-x-4">
+                <span class="text-white/60 text-sm">Member since:</span>
+                <span class="text-white font-semibold" id="joinDate">January 2024</span>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-item">
+                <i class="fas fa-coins text-3xl text-yellow-400 mb-2"></i>
+                <h3 class="text-white/70 text-sm">Total Coins</h3>
+                <p class="text-2xl font-bold text-white" id="statsCoins">0</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-money-bill-wave text-3xl text-green-400 mb-2"></i>
+                <h3 class="text-white/70 text-sm">Earnings</h3>
+                <p class="text-2xl font-bold text-white" id="statsEarnings">0.00</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users text-3xl text-blue-400 mb-2"></i>
+                <h3 class="text-white/70 text-sm">Referrals</h3>
+                <p class="text-2xl font-bold text-white" id="statsReferrals">0</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-trophy text-3xl text-purple-400 mb-2"></i>
+                <h3 class="text-white/70 text-sm">Rank</h3>
+                <p class="text-lg font-bold text-white" id="statsRank">Beginner</p>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="glass-card p-6 mb-8">
+            <div class="flex flex-wrap gap-2 mb-6 border-b border-white/20 pb-4">
+                <button class="tab-button active" onclick="showTab('profile')">
+                    <i class="fas fa-user mr-2"></i>Profile Info
+                </button>
+                <button class="tab-button" onclick="showTab('security')">
+                    <i class="fas fa-shield-alt mr-2"></i>Security
+                </button>
+                <button class="tab-button" onclick="showTab('achievements')">
+                    <i class="fas fa-trophy mr-2"></i>Achievements
+                </button>
+                <button class="tab-button" onclick="showTab('referrals')">
+                    <i class="fas fa-users mr-2"></i>Referrals
+                </button>
+                <button class="tab-button" onclick="showTab('activity')">
+                    <i class="fas fa-history mr-2"></i>Activity
+                </button>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profileTab" class="tab-content active">
+                <h3 class="text-xl font-semibold text-white mb-6">Personal Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Full Name</label>
+                        <input type="text" id="editName" class="form-input w-full" placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Mobile Number</label>
+                        <input type="tel" id="editMobile" class="form-input w-full" placeholder="+8801XXXXXXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Email Address</label>
+                        <input type="email" id="editEmail" class="form-input w-full" disabled>
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Address</label>
+                        <input type="text" id="editAddress" class="form-input w-full" placeholder="Your address (optional)">
+                    </div>
+                </div>
+                <div class="mt-6 flex space-x-4">
+                    <button onclick="saveProfile()" class="btn-primary">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                    <button onclick="resetProfile()" class="btn-secondary">
+                        <i class="fas fa-undo mr-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="securityTab" class="tab-content">
+                <h3 class="text-xl font-semibold text-white mb-6">Security Settings</h3>
+                
+                <div class="security-item">
+                    <div>
+                        <h4 class="text-white font-medium">Two-Factor Authentication</h4>
+                        <p class="text-white/60 text-sm">Add an extra layer of security</p>
+                    </div>
+                    <div class="security-status status-inactive">Disabled</div>
+                </div>
+
+                <div class="security-item">
+                    <div>
+                        <h4 class="text-white font-medium">Email Verification</h4>
+                        <p class="text-white/60 text-sm">Your email is verified</p>
+                    </div>
+                    <div class="security-status status-active">Active</div>
+                </div>
+
+                <div class="security-item">
+                    <div>
+                        <h4 class="text-white font-medium">Login Notifications</h4>
+                        <p class="text-white/60 text-sm">Get notified of new logins</p>
+                    </div>
+                    <div class="security-status status-active">Active</div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-white font-medium mb-4">Change Password</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="password" placeholder="Current Password" class="form-input">
+                        <input type="password" placeholder="New Password" class="form-input">
+                    </div>
+                    <button onclick="changePassword()" class="btn-primary mt-4">
+                        <i class="fas fa-key mr-2"></i>Update Password
+                    </button>
+                </div>
+            </div>
+
+            <!-- Achievements Tab -->
+            <div id="achievementsTab" class="tab-content">
+                <h3 class="text-xl font-semibold text-white mb-6">Your Achievements</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="achievement-badge badge-gold">
+                        <i class="fas fa-medal mr-2"></i>First Withdrawal
+                    </div>
+                    <div class="achievement-badge badge-silver">
+                        <i class="fas fa-users mr-2"></i>5 Referrals
+                    </div>
+                    <div class="achievement-badge badge-bronze">
+                        <i class="fas fa-coins mr-2"></i>100 Coins Earned
+                    </div>
+                    <div class="achievement-badge badge-gold">
+                        <i class="fas fa-clock mr-2"></i>30 Days Active
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h4 class="text-white font-medium mb-4">Progress Towards Next Achievement</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-white/80 text-sm mb-2">
+                                <span>Coin Master (500 coins)</span>
+                                <span id="coinProgress">150/500</span>
+                            </div>
+                            <div class="bg-white/20 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 h-2 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-white/80 text-sm mb-2">
+                                <span>Referral King (10 referrals)</span>
+                                <span id="referralProgress">3/10</span>
+                            </div>
+                            <div class="bg-white/20 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referrals Tab -->
+            <div id="referralsTab" class="tab-content">
+                <h3 class="text-xl font-semibold text-white mb-6">Referral Program</h3>
+                
+                <div class="referral-tree">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-white font-medium">Your Referral Code</h4>
+                        <button onclick="copyReferralCode()" class="btn-secondary">
+                            <i class="fas fa-copy mr-2"></i>Copy
+                        </button>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-lg text-center">
+                        <p class="text-2xl font-mono font-bold text-white" id="referralCode">REF123456</p>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-white font-medium mb-4">Referral Statistics</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-item">
+                            <h5 class="text-white/70 text-sm">Total Referrals</h5>
+                            <p class="text-xl font-bold text-white" id="totalReferrals">0</p>
+                        </div>
+                        <div class="stat-item">
+                            <h5 class="text-white/70 text-sm">Active This Month</h5>
+                            <p class="text-xl font-bold text-white" id="monthlyReferrals">0</p>
+                        </div>
+                        <div class="stat-item">
+                            <h5 class="text-white/70 text-sm">Bonus Earned</h5>
+                            <p class="text-xl font-bold text-white" id="referralBonus">0</p>
+                        </div>
+                        <div class="stat-item">
+                            <h5 class="text-white/70 text-sm">Commission</h5>
+                            <p class="text-xl font-bold text-white" id="commission">0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-white font-medium mb-4">Recent Referrals</h4>
+                    <div id="recentReferrals" class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                            <div>
+                                <p class="text-white font-medium">New User</p>
+                                <p class="text-white/60 text-sm">Joined 2 hours ago</p>
+                            </div>
+                            <span class="text-green-400 font-semibold">+50 coins</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Tab -->
+            <div id="activityTab" class="tab-content">
+                <h3 class="text-xl font-semibold text-white mb-6">Recent Activity</h3>
+                
+                <div class="activity-timeline">
+                    <div class="timeline-item">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-white font-medium">Coins Earned</h4>
+                                <p class="text-white/60 text-sm">Completed video watching activity</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-green-400 font-semibold">+15 coins</p>
+                                <p class="text-white/60 text-xs">2 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-white font-medium">Profile Updated</h4>
+                                <p class="text-white/60 text-sm">Updated personal information</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-white/60 text-xs">5 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-white font-medium">Account Created</h4>
+                                <p class="text-white/60 text-sm">Welcome to Coin Earner Pro!</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-green-400 font-semibold">+10 coins</p>
+                                <p class="text-white/60 text-xs">1 day ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content text-center">
+            <i class="fas fa-check-circle text-5xl text-green-400 mb-4"></i>
+            <h3 class="text-xl font-semibold text-white mb-2">Success!</h3>
+            <p class="text-white/80 mb-6" id="successMessage">Your changes have been saved successfully.</p>
+            <button onclick="hideModal()" class="btn-primary">
+                <i class="fas fa-check mr-2"></i>OK
+            </button>
+        </div>
+    </div>
+
+    <script src="assets/script.js"></script>
+    <script>
+        let profileState = {
+            currentUser: null,
+            activeTab: 'profile',
+            unsavedChanges: false
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            detectTheme();
+            showTab('profile');
+        });
+
+        function detectTheme() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function loadUserData() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                profileState.currentUser = JSON.parse(userData);
+                updateProfileDisplay();
+                populateForm();
+            } else {
+                // Mock data for demo
+                profileState.currentUser = {
+                    name: 'John Doe',
+                    email: 'john.doe@gmail.com',
+                    mobile: '+8801234567890',
+                    address: 'Dhaka, Bangladesh',
+                    coins: 150,
+                    earnings: 1.50,
+                    referrals: 3,
+                    level: 2,
+                    referralCode: 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                    joinDate: new Date().toISOString()
+                };
+                updateProfileDisplay();
+                populateForm();
+            }
+        }
+
+        function updateProfileDisplay() {
+            const user = profileState.currentUser;
+            
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userLevel').textContent = `Level ${user.level || 1}`;
+            document.getElementById('profileAvatar').textContent = user.name.charAt(0).toUpperCase();
+            
+            // Update stats
+            document.getElementById('statsCoins').textContent = user.coins || 0;
+            document.getElementById('statsEarnings').textContent = (user.earnings || 0).toFixed(2);
+            document.getElementById('statsReferrals').textContent = user.referrals || 0;
+            document.getElementById('statsRank').textContent = user.level > 5 ? 'Expert' : user.level > 2 ? 'Advanced' : 'Beginner';
+            
+            // Update referral info
+            document.getElementById('referralCode').textContent = user.referralCode || 'REF123456';
+            document.getElementById('totalReferrals').textContent = user.referrals || 0;
+            document.getElementById('monthlyReferrals').textContent = Math.floor((user.referrals || 0) / 2);
+            document.getElementById('referralBonus').textContent = (user.referrals || 0) * 50;
+            document.getElementById('commission').textContent = ((user.referrals || 0) * 0.5).toFixed(2);
+            
+            // Update progress
+            document.getElementById('coinProgress').textContent = `${user.coins || 0}/500`;
+            document.getElementById('referralProgress').textContent = `${user.referrals || 0}/10`;
+            
+            // Update join date
+            if (user.joinDate) {
+                const date = new Date(user.joinDate);
+                document.getElementById('joinDate').textContent = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long' 
+                });
+            }
+        }
+
+        function populateForm() {
+            const user = profileState.currentUser;
+            
+            document.getElementById('editName').value = user.name || '';
+            document.getElementById('editMobile').value = user.mobile || '';
+            document.getElementById('editEmail').value = user.email || '';
+            document.getElementById('editAddress').value = user.address || '';
+        }
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            profileState.activeTab = tabName;
+        }
+
+        function saveProfile() {
+            const updatedUser = {
+                ...profileState.currentUser,
+                name: document.getElementById('editName').value,
+                mobile: document.getElementById('editMobile').value,
+                address: document.getElementById('editAddress').value
+            };
+            
+            profileState.currentUser = updatedUser;
+            localStorage.setItem('userData', JSON.stringify(updatedUser));
+            
+            updateProfileDisplay();
+            showSuccessModal('Profile updated successfully!');
+            profileState.unsavedChanges = false;
+        }
+
+        function resetProfile() {
+            populateForm();
+            profileState.unsavedChanges = false;
+        }
+
+        function changePassword() {
+            // In a real app, this would validate and update the password
+            showSuccessModal('Password updated successfully!');
+        }
+
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showSuccessModal('Referral code copied to clipboard!');
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showSuccessModal('Referral code copied to clipboard!');
+            }
+        }
+
+        function showSuccessModal(message) {
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+        // Track unsaved changes
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('form-input')) {
+                profileState.unsavedChanges = true;
+            }
+        });
+
+        // Warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (profileState.unsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
+
+        // Expose functions globally
+        window.toggleTheme = toggleTheme;
+        window.showTab = showTab;
+        window.saveProfile = saveProfile;
+        window.resetProfile = resetProfile;
+        window.changePassword = changePassword;
+        window.copyReferralCode = copyReferralCode;
+        window.hideModal = hideModal;
+    </script>
+</body>
+</html>
