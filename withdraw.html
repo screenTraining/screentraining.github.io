@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Earner Pro - Withdraw</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        .withdraw-bg {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .dark .withdraw-bg {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+        .dark .glass-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .withdrawal-method {
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .withdrawal-method:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        .withdrawal-method.selected {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+    </style>
+</head>
+<body class="withdraw-bg">
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-card mx-6 mt-6 p-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <a href="dashboard.html" class="text-white hover:text-yellow-400 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+            </div>
+            <h1 class="text-xl font-bold text-white">
+                <i class="fas fa-money-bill-wave text-green-400 mr-2"></i>
+                Withdraw Earnings
+            </h1>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        <!-- Balance Overview -->
+        <div class="glass-card p-6 mb-8 text-center">
+            <h2 class="text-2xl font-bold text-white mb-4">Available Balance</h2>
+            <div class="text-5xl font-bold text-green-400 mb-2" id="availableBalance">0.00 BDT</div>
+            <p class="text-white/70">Minimum withdrawal: 20.00 BDT</p>
+        </div>
+
+        <!-- Withdrawal Form -->
+        <div class="glass-card p-8 max-w-2xl mx-auto">
+            <h3 class="text-xl font-semibold text-white mb-6">Withdrawal Methods</h3>
+            
+            <!-- WhatsApp Method -->
+            <div class="withdrawal-method selected mb-4" onclick="selectMethod('whatsapp')">
+                <div class="flex items-center">
+                    <i class="fab fa-whatsapp text-3xl text-green-400 mr-4"></i>
+                    <div>
+                        <h4 class="text-white font-semibold">WhatsApp</h4>
+                        <p class="text-white/70 text-sm">Instant withdrawal via WhatsApp</p>
+                    </div>
+                    <i class="fas fa-check-circle text-green-400 ml-auto text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Amount Input -->
+            <div class="mb-6">
+                <label class="block text-white mb-2">Withdrawal Amount (BDT)</label>
+                <input type="number" id="withdrawAmount" min="20" step="0.01" 
+                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50"
+                       placeholder="Enter amount (minimum 20.00 BDT)">
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="mb-6">
+                <label class="block text-white mb-2">WhatsApp Number</label>
+                <input type="tel" id="whatsappNumber" 
+                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50"
+                       placeholder="+8801XXXXXXXXX">
+            </div>
+
+            <!-- Withdraw Button -->
+            <button onclick="processWithdrawal()" 
+                    class="w-full btn-primary text-white py-4 px-6 rounded-xl font-semibold text-lg">
+                <i class="fas fa-paper-plane mr-2"></i>
+                Send Withdrawal Request
+            </button>
+
+            <!-- Terms -->
+            <div class="mt-6 p-4 bg-white/5 rounded-lg">
+                <p class="text-white/60 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Withdrawals are processed within 24 hours. All account data will be reset after withdrawal.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/script.js"></script>
+    <script>
+        let withdrawState = {
+            currentUser: null,
+            selectedMethod: 'whatsapp'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            detectTheme();
+        });
+
+        function detectTheme() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function loadUserData() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                withdrawState.currentUser = JSON.parse(userData);
+                document.getElementById('availableBalance').textContent = 
+                    withdrawState.currentUser.earnings.toFixed(2) + ' BDT';
+            }
+        }
+
+        function selectMethod(method) {
+            withdrawState.selectedMethod = method;
+            document.querySelectorAll('.withdrawal-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function processWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const whatsapp = document.getElementById('whatsappNumber').value;
+
+            if (!withdrawState.currentUser) {
+                alert('Please login first');
+                return;
+            }
+
+            if (amount < 20) {
+                alert('Minimum withdrawal amount is 20.00 BDT');
+                return;
+            }
+
+            if (amount > withdrawState.currentUser.earnings) {
+                alert('Insufficient balance');
+                return;
+            }
+
+            if (!whatsapp) {
+                alert('Please enter your WhatsApp number');
+                return;
+            }
+
+            const message = `Withdrawal Request:\nAmount: ${amount.toFixed(2)} BDT\nUser: ${withdrawState.currentUser.name}\nEmail: ${withdrawState.currentUser.email}\nWhatsApp: ${whatsapp}`;
+            const whatsappUrl = `https://wa.me/8801700000000?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappUrl, '_blank');
+            
+            // Reset user data after withdrawal
+            withdrawState.currentUser.earnings = 0;
+            withdrawState.currentUser.coins = 0;
+            localStorage.setItem('userData', JSON.stringify(withdrawState.currentUser));
+            
+            alert('Withdrawal request sent! Your account data has been reset.');
+            window.location.href = 'dashboard.html';
+        }
+
+        window.toggleTheme = toggleTheme;
+        window.selectMethod = selectMethod;
+        window.processWithdrawal = processWithdrawal;
+    </script>
+</body>
+</html>
