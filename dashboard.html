@@ -6,98 +6,161 @@
     <title>Coin Earner Pro - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
         * {
             font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .dashboard-bg {
-            min-height: 100vh;
+        .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
+            min-height: 100vh;
         }
         
-        .dark .dashboard-bg {
+        .dark .gradient-bg {
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
         .glass-card {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border-radius: 20px;
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .glass-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
         }
         
-        .dark .glass-card {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .stats-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 16px;
             transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
             position: relative;
             overflow: hidden;
         }
         
-        .stats-card::before {
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 20px;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .earning-button {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: block;
+            width: 100%;
+        }
+        
+        .earning-button::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
         }
         
-        .stats-card:hover::before {
+        .earning-button:hover::before {
             left: 100%;
         }
         
-        .stats-card:hover {
+        .earning-button:not(.disabled):not(.cooldown):hover {
             transform: translateY(-8px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.4);
-        }
-        
-        .earning-button {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .earning-button:not(.disabled):not(.cooldown):hover {
-            transform: translateY(-10px) scale(1.05);
-            border-color: rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-        }
-        
-        .earning-button.active {
-            background: rgba(34, 197, 94, 0.2);
-            border-color: rgba(34, 197, 94, 0.5);
-            animation: pulse 2s infinite;
         }
         
         .earning-button.disabled {
@@ -116,21 +179,44 @@
         .earning-button.processing {
             background: rgba(59, 130, 246, 0.2);
             border-color: rgba(59, 130, 246, 0.5);
-            animation: processing 1.5s infinite;
+            animation: processing-pulse 1.5s infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-        
-        @keyframes processing {
+        @keyframes processing-pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
         
-        .coin-animation {
-            animation: coinFlip 2s ease-in-out infinite;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes slideOutRight {
+            from { transform: translateX(0); }
+            to { transform: translateX(100%); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0, -20px, 0); }
+            70% { transform: translate3d(0, -10px, 0); }
+            90% { transform: translate3d(0, -4px, 0); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         @keyframes coinFlip {
@@ -138,13 +224,9 @@
             50% { transform: rotateY(180deg); }
         }
         
-        .floating-reward {
-            position: fixed;
-            pointer-events: none;
-            z-index: 1000;
-            font-size: 2.5rem;
-            font-weight: bold;
-            animation: floatUp 3s ease-out forwards;
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
+            50% { text-shadow: 0 0 30px rgba(34, 197, 94, 1), 0 0 40px rgba(34, 197, 94, 0.8); }
         }
         
         @keyframes floatUp {
@@ -158,42 +240,65 @@
             }
         }
         
-        .progress-ring {
-            transition: stroke-dasharray 0.3s ease;
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .countdown-timer {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            padding: 0.75rem;
-            margin-top: 1rem;
-            animation: timerPulse 1s infinite alternate;
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
         
-        @keyframes timerPulse {
-            from { border-color: rgba(239, 68, 68, 0.3); }
-            to { border-color: rgba(239, 68, 68, 0.6); }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .activity-timer {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin: 1rem 0;
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
         }
         
-        .timer-progress {
-            background: linear-gradient(90deg, #ef4444, #f97316, #eab308);
+        .progress-bar {
+            width: 100%;
             height: 8px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
-            transition: width 1s linear;
-            position: relative;
             overflow: hidden;
+            position: relative;
         }
         
-        .timer-progress::after {
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .progress-fill::after {
             content: '';
             position: absolute;
             top: 0;
@@ -204,29 +309,9 @@
             animation: shimmer 2s infinite;
         }
         
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 12px 16px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
+        .timer-progress {
+            background: linear-gradient(90deg, #ef4444, #f97316, #eab308);
+            transition: width 1s linear;
         }
         
         .security-indicator {
@@ -260,1309 +345,1116 @@
             background: rgba(239, 68, 68, 0.2);
             color: #ef4444;
             border: 1px solid rgba(239, 68, 68, 0.5);
-            animation: dangerBlink 1s infinite alternate;
+            animation: danger-blink 1s infinite alternate;
         }
         
-        @keyframes dangerBlink {
+        @keyframes danger-blink {
             from { opacity: 1; }
             to { opacity: 0.7; }
         }
         
-        .navigation-bar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 50;
+        .floating-reward {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 2.5rem;
+            font-weight: bold;
+            animation: floatUp 3s ease-out forwards;
         }
         
-        .nav-link {
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
             transition: all 0.3s ease;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
         }
         
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .nav-link.active {
+        .theme-toggle:hover {
             background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-toggle i {
+            color: white;
+            font-size: 20px;
+        }
+        
+        .dark .theme-toggle i {
             color: white;
         }
         
         .notification-toast {
             position: fixed;
-            top: 100px;
+            top: 20px;
             right: 20px;
             z-index: 1000;
             max-width: 400px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 16px;
             transform: translateX(120%);
-            transition: transform 0.5s ease;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
         .notification-toast.show {
             transform: translateX(0);
         }
         
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+        .notification-toast.success {
+            border-left: 4px solid #22c55e;
         }
         
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
+        .notification-toast.error {
+            border-left: 4px solid #ef4444;
         }
         
-        .modal-content {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 24px;
-            padding: 2.5rem;
-            max-width: 500px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
+        .notification-toast.warning {
+            border-left: 4px solid #f59e0b;
         }
         
-        .modal-overlay.show .modal-content {
-            transform: scale(1);
+        .notification-toast.info {
+            border-left: 4px solid #3b82f6;
         }
         
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid #ffffff;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
+        .hidden {
+            display: none !important;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
         }
         
-        .earnings-glow {
-            text-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
-            animation: earningsGlow 2s ease-in-out infinite alternate;
+        .pulse {
+            animation: pulse 2s infinite;
         }
         
-        @keyframes earningsGlow {
-            from { text-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
-            to { text-shadow: 0 0 30px rgba(34, 197, 94, 1), 0 0 40px rgba(34, 197, 94, 0.8); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .user-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+        .coin-bounce {
+            animation: coinBounce 0.6s ease-in-out;
         }
         
-        .achievement-badge {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-        }
-        
-        .referral-code-display {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 1.25rem;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 0.1em;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .referral-code-display::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: codeShimmer 3s infinite;
-        }
-        
-        @keyframes codeShimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        .hidden { display: none !important; }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-        
-        .level-progress {
-            background: rgba(255, 255, 255, 0.2);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .level-progress-fill {
-            background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
-            height: 100%;
-            border-radius: 6px;
-            transition: width 0.5s ease;
-            position: relative;
-        }
-        
-        .level-progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-            animation: progressShimmer 2s infinite;
-        }
-        
-        @keyframes progressShimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        @keyframes coinBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
         }
     </style>
 </head>
-<body class="dashboard-bg">
-    <!-- Theme Toggle -->
+<body class="gradient-bg text-white">
+    <!-- Theme Toggle Button -->
     <div class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon" id="themeIcon"></i>
+        <i class="fas fa-moon"></i>
     </div>
     
-    <!-- Security Indicator -->
-    <div class="security-indicator security-safe" id="securityIndicator">
+    <!-- Security Status Indicator -->
+    <div class="security-indicator security-safe" id="securityStatus">
         <i class="fas fa-shield-alt"></i>
-        <span id="securityText">System Secure</span>
+        <span>Security Active</span>
     </div>
     
-    <!-- Navigation Bar -->
-    <nav class="navigation-bar">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-6">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-coins text-2xl text-yellow-400"></i>
-                    <h1 class="text-xl font-bold text-white">Coin Earner Pro</h1>
-                </div>
-                <div class="flex space-x-2">
-                    <a href="#" class="nav-link active" onclick="showSection('dashboard')">
-                        <i class="fas fa-home mr-2"></i>Dashboard
-                    </a>
-                    <a href="withdraw.html" class="nav-link">
-                        <i class="fas fa-money-bill-wave mr-2"></i>Withdraw
-                    </a>
-                    <a href="profile.html" class="nav-link">
-                        <i class="fas fa-user mr-2"></i>Profile
-                    </a>
-                </div>
+    <!-- Main App Container -->
+    <div class="container mx-auto px-4 py-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <h1 class="text-3xl font-bold mr-2">
+                    <i class="fas fa-coins text-yellow-400"></i> 
+                    Coin Earner Pro
+                </h1>
+                <span class="text-white/80 text-lg">- Dashboard</span>
             </div>
-            
             <div class="flex items-center space-x-4">
-                <div class="user-avatar" id="userAvatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="text-right">
-                    <p class="text-white font-semibold" id="userName">Guest User</p>
-                    <p class="text-white/70 text-sm" id="userLevel">Level 1</p>
-                </div>
-                <button onclick="logout()" class="btn-secondary">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                <div id="userGreeting" class="text-white/80 mr-4">Welcome, User!</div>
+                <button onclick="logout()" class="btn btn-secondary">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </button>
             </div>
         </div>
-    </nav>
-    
-    <!-- Main Dashboard Content -->
-    <div class="container mx-auto px-6 py-8" id="dashboardSection">
-        <!-- User Status Notice -->
-        <div id="userStatusNotice" class="glass-card p-4 mb-6 border-l-4 border-yellow-400 hidden">
+        
+        <!-- Status Notices -->
+        <div id="guestNotice" class="glass p-4 mb-6 hidden">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-triangle text-yellow-400 mr-3 text-xl"></i>
+                <i class="fas fa-user-clock text-yellow-400 mr-3 text-xl"></i>
                 <div>
-                    <h4 class="font-semibold text-yellow-400" id="statusTitle">Account Status</h4>
-                    <p class="text-white/80 text-sm" id="statusMessage">Please complete your profile to start earning</p>
+                    <h4 class="font-semibold text-yellow-400">Guest Mode</h4>
+                    <p class="text-white/80 text-sm">You're browsing as a guest. Register to start earning!</p>
                 </div>
             </div>
         </div>
         
-        <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="stats-card">
-                <div class="coin-animation">
-                    <i class="fas fa-coins text-4xl text-yellow-400 mb-3"></i>
-                </div>
-                <h3 class="text-white/70 text-sm font-medium mb-1">Total Coins</h3>
-                <p class="text-3xl font-bold text-white" id="totalCoins">0</p>
-                <div class="text-xs text-white/60 mt-2">
-                    <span id="coinsToday">+0 today</span>
+        <div id="verificationNotice" class="glass p-4 mb-6 hidden">
+            <div class="flex items-center">
+                <i class="fas fa-envelope-open-text text-orange-400 mr-3 text-xl pulse"></i>
+                <div>
+                    <h4 class="font-semibold text-orange-400">Email Verification Required</h4>
+                    <p class="text-white/80 text-sm">Please verify your email to start earning coins!</p>
+                    <button onclick="showEmailVerification()" class="mt-2 text-xs bg-orange-500 text-white px-3 py-1 rounded-lg hover:bg-orange-600 transition-all">
+                        Verify Now
+                    </button>
                 </div>
             </div>
-            
-            <div class="stats-card">
+        </div>
+        
+        <div id="inactiveNotice" class="glass p-4 mb-6 hidden">
+            <div class="flex items-center">
+                <i class="fas fa-user-slash text-red-400 mr-3 text-xl"></i>
+                <div>
+                    <h4 class="font-semibold text-red-400">Account Deactivated</h4>
+                    <p class="text-white/80 text-sm">Your account has been deactivated. Please contact support.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+            <div class="glass-card p-6 text-center">
+                <i class="fas fa-coins text-4xl text-yellow-400 mb-3"></i>
+                <h3 class="text-white/70 text-sm font-medium mb-1">Total Coins</h3>
+                <p class="text-3xl font-bold text-white" id="coinCount">0</p>
+            </div>
+            <div class="glass-card p-6 text-center">
                 <i class="fas fa-gem text-4xl text-cyan-400 mb-3"></i>
                 <h3 class="text-white/70 text-sm font-medium mb-1">Diamonds</h3>
-                <p class="text-3xl font-bold text-cyan-400" id="totalDiamonds">0</p>
-                <div class="text-xs text-white/60 mt-2">
-                    <span id="diamondsThisWeek">+0 this week</span>
-                </div>
+                <p class="text-3xl font-bold text-cyan-400" id="diamondCount">0</p>
             </div>
-            
-            <div class="stats-card">
+            <div class="glass-card p-6 text-center">
                 <i class="fas fa-money-bill-wave text-4xl text-green-400 mb-3"></i>
-                <h3 class="text-white/70 text-sm font-medium mb-1">Total Earnings</h3>
-                <p class="text-3xl font-bold text-green-400 earnings-glow" id="totalEarnings">0.00 BDT</p>
-                <div class="text-xs text-white/60 mt-2">
-                    <span id="earningsThisMonth">+0.00 this month</span>
-                </div>
+                <h3 class="text-white/70 text-sm font-medium mb-1">Earnings</h3>
+                <p class="text-3xl font-bold text-green-400 earning-glow" id="earnings">0.00 BDT</p>
             </div>
-            
-            <div class="stats-card">
-                <i class="fas fa-trophy text-4xl text-purple-400 mb-3"></i>
-                <h3 class="text-white/70 text-sm font-medium mb-1">Achievements</h3>
-                <p class="text-3xl font-bold text-purple-400" id="totalAchievements">0</p>
-                <div class="achievement-badge" id="currentRank">Beginner</div>
+            <div class="glass-card p-6 text-center">
+                <i class="fas fa-gamepad text-4xl text-purple-400 mb-3"></i>
+                <h3 class="text-white/70 text-sm font-medium mb-1">Activities</h3>
+                <p class="text-3xl font-bold text-purple-400" id="activitiesCount">0</p>
             </div>
-        </div>
-        
-        <!-- Progress to Next Level -->
-        <div class="glass-card p-6 mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-white text-lg font-semibold">
-                    <i class="fas fa-chart-line text-blue-400 mr-2"></i>
-                    Progress to Next Level
-                </h3>
-                <span class="text-white/70 text-sm" id="nextLevelInfo">Level 2 - 500 coins needed</span>
-            </div>
-            <div class="level-progress">
-                <div class="level-progress-fill" id="levelProgressFill" style="width: 0%"></div>
-            </div>
-            <p class="text-sm text-white/70 mt-2" id="levelProgressText">0/500 coins earned</p>
-        </div>
-        
-        <!-- Activity Timer (shown when earning) -->
-        <div class="activity-timer hidden" id="activityTimer">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-blue-400 text-lg font-semibold">
-                    <i class="fas fa-clock mr-2"></i>
-                    Activity in Progress
-                </h3>
-                <span class="text-white/70 text-sm" id="activityType">Earning coins...</span>
-            </div>
-            <div class="bg-white/20 rounded-full h-2 mb-3">
-                <div class="timer-progress" id="timerProgress" style="width: 100%"></div>
-            </div>
-            <div class="flex justify-between items-center">
-                <p class="text-sm text-white/80" id="timerText">Time remaining: 60 seconds</p>
-                <p class="text-xs text-blue-400">Stay on page to earn coins!</p>
+            <div class="glass-card p-6 text-center">
+                <i class="fas fa-users text-4xl text-blue-400 mb-3"></i>
+                <h3 class="text-white/70 text-sm font-medium mb-1">Referrals</h3>
+                <p class="text-3xl font-bold text-blue-400" id="referralCount">0</p>
             </div>
         </div>
         
-        <!-- Earning Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Games Button -->
-            <div class="earning-button" id="gamesButton" onclick="startEarningActivity('games')">
-                <i class="fas fa-gamepad text-5xl mb-4 text-purple-400"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Play Games</h3>
-                <p class="text-white/70 text-sm mb-2">Earn 10 coins per click</p>
-                <p class="text-green-400 text-xs font-semibold">Free Activity</p>
-                <div class="countdown-timer hidden" id="gamesCooldown">
-                    <p class="text-red-400 text-sm font-semibold">
-                        <i class="fas fa-clock mr-1"></i>
-                        Cooldown: <span id="gamesTimer">59:59</span>
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Videos Button -->
-            <div class="earning-button" id="videosButton" onclick="startEarningActivity('videos')">
-                <i class="fas fa-video text-5xl mb-4 text-red-400"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Watch Videos</h3>
-                <p class="text-white/70 text-sm mb-2">Earn 15 coins per click</p>
-                <p class="text-green-400 text-xs font-semibold">Free Activity</p>
-                <div class="countdown-timer hidden" id="videosCooldown">
-                    <p class="text-red-400 text-sm font-semibold">
-                        <i class="fas fa-clock mr-1"></i>
-                        Cooldown: <span id="videosTimer">59:59</span>
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Survey Button -->
-            <div class="earning-button" id="surveyButton" onclick="startEarningActivity('survey')">
-                <i class="fas fa-clipboard-list text-5xl mb-4 text-orange-400"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Take Surveys</h3>
-                <p class="text-white/70 text-sm mb-2">Earn 25 coins per click</p>
-                <p class="text-yellow-400 text-xs font-semibold">Premium Activity</p>
-                <div class="countdown-timer hidden" id="surveyCooldown">
-                    <p class="text-red-400 text-sm font-semibold">
-                        <i class="fas fa-clock mr-1"></i>
-                        Cooldown: <span id="surveyTimer">59:59</span>
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Shopping Button -->
-            <div class="earning-button" id="shoppingButton" onclick="startEarningActivity('shopping')">
-                <i class="fas fa-shopping-bag text-5xl mb-4 text-pink-400"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Online Shopping</h3>
-                <p class="text-white/70 text-sm mb-2">Earn 20 coins per click</p>
-                <p class="text-green-400 text-xs font-semibold">Free Activity</p>
-                <div class="countdown-timer hidden" id="shoppingCooldown">
-                    <p class="text-red-400 text-sm font-semibold">
-                        <i class="fas fa-clock mr-1"></i>
-                        Cooldown: <span id="shoppingTimer">59:59</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Referral System -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="glass-card p-6">
-                <h3 class="text-white text-lg font-semibold mb-4">
-                    <i class="fas fa-users text-blue-400 mr-2"></i>
-                    Referral Program
-                </h3>
-                <p class="text-white/70 text-sm mb-4">Share your referral code and earn bonus coins!</p>
-                <div class="referral-code-display mb-4">
-                    <span id="userReferralCode">LOADING...</span>
-                </div>
-                <div class="flex space-x-3">
-                    <button onclick="copyReferralCode()" class="btn-primary flex-1">
-                        <i class="fas fa-copy mr-2"></i>Copy Code
-                    </button>
-                    <button onclick="shareReferralCode()" class="btn-secondary flex-1">
-                        <i class="fas fa-share mr-2"></i>Share
-                    </button>
-                </div>
-                <div class="mt-4 p-3 bg-white/10 rounded-lg">
-                    <p class="text-xs text-white/60">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Earn 50 coins for each friend who joins using your code!
-                    </p>
-                </div>
-            </div>
-            
-            <div class="glass-card p-6">
-                <h3 class="text-white text-lg font-semibold mb-4">
-                    <i class="fas fa-chart-bar text-green-400 mr-2"></i>
-                    Today's Statistics
-                </h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-white/70">Coins Earned:</span>
-                        <span class="text-white font-semibold" id="todayCoins">0</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-white/70">Activities Completed:</span>
-                        <span class="text-white font-semibold" id="todayActivities">0</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-white/70">Referrals Made:</span>
-                        <span class="text-white font-semibold" id="todayReferrals">0</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-white/70">Time Spent:</span>
-                        <span class="text-white font-semibold" id="todayTimeSpent">0 min</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Recent Activities -->
-        <div class="glass-card p-6">
-            <h3 class="text-white text-lg font-semibold mb-4">
-                <i class="fas fa-history text-purple-400 mr-2"></i>
-                Recent Activities
+        <!-- Progress to Next Taka -->
+        <div class="glass p-6 mb-8">
+            <h3 class="text-white text-lg font-semibold mb-3">
+                <i class="fas fa-trophy text-purple-400 mr-2"></i>
+                Progress to Next Taka
             </h3>
-            <div id="recentActivities" class="space-y-3">
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-coins text-yellow-400 mr-3"></i>
-                        <div>
-                            <p class="text-white text-sm font-medium">Welcome bonus received</p>
-                            <p class="text-white/60 text-xs">Just now</p>
-                        </div>
-                    </div>
-                    <span class="text-green-400 font-semibold">+10 coins</span>
+            <div class="bg-white/20 rounded-full h-4 mb-2">
+                <div class="progress-bar h-4 rounded-full" id="progressBar" style="width: 0%"></div>
+            </div>
+            <p class="text-sm text-white/70" id="progressText">0/1000 coins</p>
+        </div>
+        
+        <!-- Activity Timer -->
+        <div id="activityTimer" class="glass p-4 mb-6 hidden border-l-4 border-blue-400">
+            <h3 class="text-blue-400 text-lg font-semibold mb-3">
+                <i class="fas fa-clock mr-2"></i>
+                Activity in Progress
+            </h3>
+            <div class="bg-white/20 rounded-full h-3 mb-2">
+                <div class="timer-progress h-3 rounded-full" id="timerProgress" style="width: 100%"></div>
+            </div>
+            <p class="text-sm text-white/80" id="timerText">Time remaining: 30 seconds</p>
+            <p class="text-xs text-blue-400 mt-2">Stay on page to earn coins!</p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <button id="gamesBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                <i class="fas fa-gamepad text-5xl mb-4 text-purple-400 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-white mb-2">Play Games</h3>
+                <p class="text-white/70 text-sm">Earn 10 Coins (30s)</p>
+                <p class="text-cyan-400 text-xs mt-1">Cost: 10 💎</p>
+            </button>
+            <button id="videosBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                <i class="fas fa-video text-5xl mb-4 text-red-400 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-white mb-2">Watch Videos</h3>
+                <p class="text-white/70 text-sm">Earn 10 Coins (30s)</p>
+                <p class="text-cyan-400 text-xs mt-1">Cost: 50 💎</p>
+            </button>
+            <button id="productsBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
+                <i class="fas fa-shopping-bag text-5xl mb-4 text-green-400 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-white mb-2">View Products</h3>
+                <p class="text-white/70 text-sm">Browse Amazing Products</p>
+                <p class="text-green-400 text-xs mt-1">Free Browsing</p>
+            </button>
+        </div>
+        
+        <!-- User Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" id="userOnlySection">
+            <div class="glass p-6">
+                <h3 class="text-white text-lg font-semibold mb-3">
+                    <i class="fas fa-share-alt text-blue-400 mr-2"></i>
+                    Sharing & Rewards
+                </h3>
+                <p class="text-sm text-white/70 mb-4">Share to earn diamonds and coins!</p>
+                <div class="bg-white/10 p-3 rounded-xl mb-4">
+                    <p class="text-xs text-white/60 mb-1">Your Referral Code:</p>
+                    <p class="font-mono text-lg font-bold text-white" id="referralCode">LOADING...</p>
+                </div>
+                <button onclick="shareApp()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
+                    <i class="fas fa-share mr-2"></i> Share App (+2💎)
+                </button>
+            </div>
+            <div class="glass p-6">
+                <h3 class="text-white text-lg font-semibold mb-3">
+                    <i class="fas fa-money-bill-wave text-green-400 mr-2"></i>
+                    Withdraw Earnings
+                </h3>
+                <p class="text-sm text-white/70 mb-4">Minimum withdrawal: 20.00 BDT</p>
+                <div class="bg-white/10 p-3 rounded-xl mb-4">
+                    <p class="text-xs text-white/60">Available: <span id="withdrawableAmount">0.00 BDT</span></p>
+                </div>
+                <button onclick="withdrawEarnings()" id="withdrawBtn" class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-4 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
+                    <i class="fas fa-whatsapp mr-2"></i> Withdraw via WhatsApp
+                </button>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="glass p-6 mb-6">
+            <div class="flex items-start">
+                <i class="fas fa-lightbulb text-yellow-400 mr-3 mt-1 text-xl"></i>
+                <div>
+                    <h4 class="font-semibold text-yellow-400 mb-3">How to Earn:</h4>
+                    <ul class="text-white/80 text-sm space-y-2 list-disc list-inside">
+                        <li>Register with Gmail and verify your email</li>
+                        <li>Share the app to earn 2 diamonds per share</li>
+                        <li>Use diamonds to unlock daily games (10💎) and videos (50💎)</li>
+                        <li>Complete activities for 30 seconds to earn 10 coins each</li>
+                        <li>Valid referral codes give 30 bonus coins</li>
+                        <li>When someone uses your referral, you get 30 coins</li>
+                        <li>Browse products freely without any cost</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-8 text-white/60">
+            <p class="text-sm">
+                <i class="fas fa-shield-alt mr-2"></i>
+                Secure data storage with advanced anti-cheat protection
+            </p>
+        </div>
+    </div>
+    
+    <!-- Custom Alert Modal -->
+    <div class="modal-overlay hidden" id="customAlert">
+        <div class="modal-content glass rounded-2xl p-8 text-center">
+            <i id="alertIcon" class="fas fa-info-circle text-5xl mb-4 text-blue-400"></i>
+            <p id="alertMessage" class="text-xl mb-6 text-white"></p>
+            <button onclick="hideCustomAlert()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
+                OK
+            </button>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay hidden" id="customConfirm">
+        <div class="modal-content glass rounded-2xl p-8 text-center">
+            <i class="fas fa-question-circle text-5xl text-yellow-400 mb-4"></i>
+            <p id="confirmMessage" class="text-xl mb-6 text-white"></p>
+            <div class="flex space-x-4 justify-center">
+                <button onclick="hideCustomConfirm(false)" class="px-6 py-3 glass text-white rounded-xl hover:bg-white/20 font-semibold transition-all">
+                    Cancel
+                </button>
+                <button onclick="hideCustomConfirm(true)" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Email Verification Modal -->
+    <div class="modal-overlay hidden" id="emailVerificationModal">
+        <div class="modal-content glass rounded-2xl p-8 text-center">
+            <i class="fas fa-envelope-circle-check text-6xl text-blue-400 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-4 text-white">Verify Your Email</h2>
+            <p class="text-white/80 mb-6">A verification code has been sent to your email. Please check and enter the code.</p>
+            <div class="space-y-4">
+                <input type="text" id="verificationCode" placeholder="Enter 6-digit code" maxlength="6" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 text-center text-lg font-mono input-base">
+                <div class="flex space-x-3">
+                    <button onclick="verifyEmail()" class="flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
+                        Verify
+                    </button>
+                    <button id="resendButton" onclick="resendVerification()" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
+                        Resend <span id="resendCountdown"></span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Notification Toast -->
-    <div class="notification-toast" id="notificationToast">
-        <div class="flex items-center">
-            <i id="toastIcon" class="text-2xl mr-3"></i>
-            <div>
-                <h4 id="toastTitle" class="text-white font-semibold"></h4>
-                <p id="toastMessage" class="text-white/80 text-sm"></p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Activity Modal -->
-    <div class="modal-overlay" id="activityModal">
-        <div class="modal-content text-center">
-            <i id="modalIcon" class="text-6xl mb-4"></i>
-            <h2 id="modalTitle" class="text-2xl font-bold text-white mb-2"></h2>
-            <p id="modalMessage" class="text-white/80 mb-6"></p>
-            <div class="flex space-x-4 justify-center">
-                <button onclick="hideModal()" class="btn-secondary">
-                    <i class="fas fa-times mr-2"></i>Cancel
-                </button>
-                <button onclick="confirmActivity()" id="confirmBtn" class="btn-primary">
-                    <i class="fas fa-check mr-2"></i>Start Activity
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Audio Elements -->
-    <audio id="coinSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-coin-win-notification-1992.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="successSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="errorSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
-    </audio>
-    
-    <script src="assets/script.js"></script>
     <script>
-        // Dashboard State Management
-        let dashboardState = {
+        // Main application state
+        const appState = {
             currentUser: null,
             isGuestMode: false,
-            audioEnabled: false,
-            securityLevel: 'safe',
-            activityInProgress: false,
-            activityTimer: null,
-            cooldownTimers: {},
-            lastActivityTime: {},
-            sessionStartTime: Date.now(),
-            totalSessionTime: 0,
-            todayStats: {
-                coins: 0,
-                activities: 0,
-                referrals: 0,
-                timeSpent: 0
-            }
+            isAuthenticated: false,
+            isEmailVerified: false,
+            language: 'en'
         };
-
-        // Activity configurations with anti-cheat measures
-        const activityConfig = {
-            games: {
-                name: 'Play Games',
-                icon: 'fas fa-gamepad',
-                color: 'purple',
-                coins: 10,
-                duration: 60, // 1 minute
-                cooldown: 3600, // 1 hour
-                url: 'https://mustakimridoymr.github.io/Games.html'
-            },
-            videos: {
-                name: 'Watch Videos',
-                icon: 'fas fa-video',
-                color: 'red',
-                coins: 15,
-                duration: 60,
-                cooldown: 3600,
-                url: 'https://mustakimridoymr.github.io/Resources.html'
-            },
-            survey: {
-                name: 'Take Surveys',
-                icon: 'fas fa-clipboard-list',
-                color: 'orange',
-                coins: 25,
-                duration: 60,
-                cooldown: 3600,
-                url: 'https://mustakimridoymr.github.io/affiliate.html'
-            },
-            shopping: {
-                name: 'Online Shopping',
-                icon: 'fas fa-shopping-bag',
-                color: 'pink',
-                coins: 20,
-                duration: 60,
-                cooldown: 3600,
-                url: 'https://mustakimridoymr.github.io/newsApp.html'
-            }
+        
+        // Google Apps Script configuration
+        const config = {
+            apiEndpoint: 'https://script.google.com/macros/s/AKfycbxwzeoNtCleXecmpyEpfQMiZxNHizvl84nUipSj1FxTySFVhQrT-3K9Oo_7FiidM5HPL/exec',
+            whatsappNumber: '8801700000000',
+            appVersion: '1.0.0'
         };
-
-        // Enhanced Security System
-        const securitySystem = {
-            violations: 0,
-            lastViolation: 0,
-            patterns: {
-                rapidClicks: 0,
-                tabSwitches: 0,
-                consoleOpen: false,
-                suspiciousActivity: 0
-            },
-            
-            checkSecurity() {
-                this.detectDevTools();
-                this.monitorTabSwitches();
-                this.validateActivityTiming();
-                this.updateSecurityStatus();
-            },
-            
-            detectDevTools() {
-                const threshold = 160;
-                if (window.outerHeight - window.innerHeight > threshold || 
-                    window.outerWidth - window.innerWidth > threshold) {
-                    if (!this.patterns.consoleOpen) {
-                        this.patterns.consoleOpen = true;
-                        this.reportViolation('dev_tools_detected');
-                    }
-                } else {
-                    this.patterns.consoleOpen = false;
-                }
-            },
-            
-            monitorTabSwitches() {
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden && dashboardState.activityInProgress) {
-                        this.patterns.tabSwitches++;
-                        if (this.patterns.tabSwitches > 2) {
-                            this.reportViolation('excessive_tab_switching');
-                        }
-                    }
-                });
-            },
-            
-            validateActivityTiming() {
-                const now = Date.now();
-                Object.keys(dashboardState.lastActivityTime).forEach(activity => {
-                    const lastTime = dashboardState.lastActivityTime[activity];
-                    if (now - lastTime < 30000) { // Less than 30 seconds
-                        this.patterns.rapidClicks++;
-                        if (this.patterns.rapidClicks > 3) {
-                            this.reportViolation('rapid_clicking');
-                        }
-                    }
-                });
-            },
-            
-            reportViolation(type) {
-                this.violations++;
-                this.lastViolation = Date.now();
-                this.patterns.suspiciousActivity++;
-                
-                console.warn(`Security violation detected: ${type}`);
-                
-                if (this.violations > 5) {
-                    this.lockAccount();
-                } else {
-                    this.showSecurityWarning(type);
-                }
-                
-                this.updateSecurityStatus();
-            },
-            
-            lockAccount() {
-                showNotification('error', 'Account Locked', 'Too many security violations detected. Please contact support.');
-                playSound('error');
-                
-                // Disable all earning buttons
-                document.querySelectorAll('.earning-button').forEach(btn => {
-                    btn.classList.add('disabled');
-                });
-            },
-            
-            showSecurityWarning(type) {
-                const messages = {
-                    dev_tools_detected: 'Developer tools detected. Please close them to continue.',
-                    excessive_tab_switching: 'Please stay on the page during activities.',
-                    rapid_clicking: 'Please wait between activities to avoid spam detection.'
-                };
-                
-                showNotification('warning', 'Security Warning', messages[type] || 'Suspicious activity detected.');
-            },
-            
-            updateSecurityStatus() {
-                const indicator = document.getElementById('securityIndicator');
-                const text = document.getElementById('securityText');
-                
-                if (this.violations === 0) {
-                    indicator.className = 'security-indicator security-safe';
-                    text.textContent = 'System Secure';
-                    dashboardState.securityLevel = 'safe';
-                } else if (this.violations < 3) {
-                    indicator.className = 'security-indicator security-warning';
-                    text.textContent = `${this.violations} Warning${this.violations > 1 ? 's' : ''}`;
-                    dashboardState.securityLevel = 'warning';
-                } else {
-                    indicator.className = 'security-indicator security-danger';
-                    text.textContent = 'High Risk';
-                    dashboardState.securityLevel = 'danger';
-                }
-            }
-        };
-
-        // Initialize Dashboard
+        
+        // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            initializeDashboard();
-            setupEventListeners();
-            startSecurityMonitoring();
-            loadUserData();
-            updateDisplay();
-            restoreCooldowns();
+            initApp();
         });
-
-        function initializeDashboard() {
-            // Check authentication mode
-            const authMode = sessionStorage.getItem('authMode');
-            if (authMode === 'guest') {
-                dashboardState.isGuestMode = true;
-                showGuestModeNotice();
-            } else {
-                loadUserFromStorage();
-            }
-            
-            // Setup theme
-            detectAndApplyTheme();
-            
-            // Enable audio on user interaction
-            document.body.addEventListener('click', enableAudio, { once: true });
-            
-            console.log('Dashboard initialized successfully');
+        
+        function initApp() {
+            setupEventListeners();
+            checkStoredLogin();
+            console.log('Coin Earner Pro - Dashboard initialized');
         }
-
+        
         function setupEventListeners() {
-            // Prevent right-click and other security measures
-            document.addEventListener('contextmenu', e => e.preventDefault());
-            
-            // Monitor for suspicious activity
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-                    securitySystem.reportViolation('dev_tools_attempt');
-                    e.preventDefault();
+            // Activity buttons
+            document.getElementById('gamesBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('games', 'https://mustakimridoymr.github.io/Games.html');
+                } else {
+                    if (!checkActivityPermission('games', 10)) return;
+                    startActivity('games', 'https://mustakimridoymr.github.io/Games.html');
                 }
             });
             
-            // Track session time
-            setInterval(() => {
-                dashboardState.totalSessionTime += 1000;
-                dashboardState.todayStats.timeSpent = Math.floor(dashboardState.totalSessionTime / 60000);
-                updateTodayStats();
-            }, 1000);
-        }
-
-        function startSecurityMonitoring() {
-            // Run security checks every 500ms
-            setInterval(() => {
-                securitySystem.checkSecurity();
-            }, 500);
-        }
-
-        function enableAudio() {
-            dashboardState.audioEnabled = true;
-        }
-
-        function playSound(type) {
-            if (!dashboardState.audioEnabled) return;
+            document.getElementById('videosBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('videos', 'https://mustakimridoymr.github.io/Resources.html');
+                } else {
+                    if (!checkActivityPermission('videos', 50)) return;
+                    startActivity('videos', 'https://mustakimridoymr.github.io/Resources.html');
+                }
+            });
             
-            const sound = document.getElementById(type + 'Sound');
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(e => console.log('Sound play failed:', e));
-            }
-        }
-
-        function detectAndApplyTheme() {
-            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-                document.getElementById('themeIcon').className = 'fas fa-sun';
-            }
-        }
-
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            const icon = document.getElementById('themeIcon');
-            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
-        function loadUserFromStorage() {
-            // This would typically load from your backend
-            // For now, we'll use mock data
-            dashboardState.currentUser = {
-                name: 'John Doe',
-                email: 'john.doe@gmail.com',
-                coins: 150,
-                diamonds: 25,
-                earnings: 1.50,
-                level: 2,
-                referralCode: 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                achievements: 3,
-                joinDate: new Date().toISOString()
-            };
-        }
-
-        function showGuestModeNotice() {
-            const notice = document.getElementById('userStatusNotice');
-            const title = document.getElementById('statusTitle');
-            const message = document.getElementById('statusMessage');
+            document.getElementById('productsBtn').addEventListener('click', () => {
+                if (isGuestMode) {
+                    startActivity('products', 'https://mustakimridoymr.github.io/affiliate.html');
+                } else {
+                    if (!checkActivityPermission('products', 10)) return;
+                    startActivity('products', 'https://mustakimridoymr.github.io/affiliate.html');
+                }
+            });
             
-            notice.classList.remove('hidden');
-            title.textContent = 'Guest Mode';
-            message.textContent = 'You are browsing as a guest. Register to start earning coins!';
+            // User action buttons
+            document.getElementById('withdrawBtn').addEventListener('click', withdrawEarnings);
+            document.getElementById('shareApp').addEventListener('click', shareApp);
         }
-
-        function updateDisplay() {
-            if (dashboardState.isGuestMode) {
-                updateGuestDisplay();
+        
+        function checkStoredLogin() {
+            const storedUser = localStorage.getItem('coinEarnerUser');
+            if (storedUser) {
+                try {
+                    appState.currentUser = JSON.parse(storedUser);
+                    appState.isAuthenticated = true;
+                    appState.isGuestMode = false;
+                    appState.isEmailVerified = appState.currentUser.isEmailVerified || false;
+                    showMainApp();
+                } catch (error) {
+                    console.error('Error parsing stored user data:', error);
+                }
             } else {
-                updateUserDisplay();
+                // Show guest content
+                showGuestContent();
             }
         }
-
-        function updateGuestDisplay() {
-            document.getElementById('userName').textContent = 'Guest User';
-            document.getElementById('userLevel').textContent = 'Level 0';
-            document.getElementById('totalCoins').textContent = '0';
-            document.getElementById('totalDiamonds').textContent = '0';
-            document.getElementById('totalEarnings').textContent = '0.00 BDT';
-            document.getElementById('totalAchievements').textContent = '0';
-            document.getElementById('userReferralCode').textContent = 'GUEST MODE';
-            
-            // Disable earning buttons for guests
-            document.querySelectorAll('.earning-button').forEach(btn => {
-                btn.classList.add('disabled');
-                btn.onclick = () => {
-                    showNotification('warning', 'Registration Required', 'Please register to start earning coins!');
-                };
-            });
+        
+        function showGuestContent() {
+            appState.isGuestMode = true;
+            appState.isAuthenticated = false;
+            document.getElementById('guestNotice').classList.remove('hidden');
+            document.getElementById('userOnlySection').style.display = 'none';
+            updateDisplay();
         }
-
-        function updateUserDisplay() {
-            const user = dashboardState.currentUser;
-            if (!user) return;
+        
+        function showMainApp() {
+            if (!appState.currentUser) return;
             
-            document.getElementById('userName').textContent = user.name;
-            document.getElementById('userLevel').textContent = `Level ${user.level}`;
-            document.getElementById('totalCoins').textContent = user.coins.toLocaleString();
-            document.getElementById('totalDiamonds').textContent = user.diamonds.toLocaleString();
-            document.getElementById('totalEarnings').textContent = `${user.earnings.toFixed(2)} BDT`;
-            document.getElementById('totalAchievements').textContent = user.achievements;
-            document.getElementById('userReferralCode').textContent = user.referralCode;
+            // Update UI elements
+            document.getElementById('userGreeting').textContent = `Welcome, ${appState.currentUser.name}!`;
+            document.getElementById('referralCode').textContent = appState.currentUser.referralCode;
+            document.getElementById('currentDiamonds').textContent = appState.currentUser.diamonds;
             
-            // Update user avatar
-            const avatar = document.getElementById('userAvatar');
-            avatar.textContent = user.name.charAt(0).toUpperCase();
-            
-            // Update level progress
-            updateLevelProgress();
-        }
-
-        function updateLevelProgress() {
-            const user = dashboardState.currentUser;
-            if (!user) return;
-            
-            const currentLevelCoins = (user.level - 1) * 500;
-            const nextLevelCoins = user.level * 500;
-            const progress = ((user.coins - currentLevelCoins) / (nextLevelCoins - currentLevelCoins)) * 100;
-            
-            document.getElementById('levelProgressFill').style.width = `${Math.min(progress, 100)}%`;
-            document.getElementById('levelProgressText').textContent = 
-                `${user.coins - currentLevelCoins}/${nextLevelCoins - currentLevelCoins} coins earned`;
-            document.getElementById('nextLevelInfo').textContent = 
-                `Level ${user.level + 1} - ${nextLevelCoins - user.coins} coins needed`;
-        }
-
-        function updateTodayStats() {
-            document.getElementById('todayCoins').textContent = dashboardState.todayStats.coins;
-            document.getElementById('todayActivities').textContent = dashboardState.todayStats.activities;
-            document.getElementById('todayReferrals').textContent = dashboardState.todayStats.referrals;
-            document.getElementById('todayTimeSpent').textContent = `${dashboardState.todayStats.timeSpent} min`;
-            
-            // Update daily stats in main cards
-            document.getElementById('coinsToday').textContent = `+${dashboardState.todayStats.coins} today`;
-            document.getElementById('diamondsThisWeek').textContent = `+${Math.floor(dashboardState.todayStats.coins / 10)} this week`;
-            document.getElementById('earningsThisMonth').textContent = `+${(dashboardState.todayStats.coins * 0.001).toFixed(2)} this month`;
-        }
-
-        function startEarningActivity(activityType) {
-            if (dashboardState.isGuestMode) {
-                showNotification('warning', 'Registration Required', 'Please register to start earning coins!');
-                return;
+            // Check account status
+            if (!appState.currentUser.isEmailVerified) {
+                document.getElementById('verificationNotice').classList.remove('hidden');
             }
             
-            if (dashboardState.activityInProgress) {
-                showNotification('warning', 'Activity in Progress', 'Please wait for the current activity to complete!');
-                return;
-            }
-            
-            if (isInCooldown(activityType)) {
-                showNotification('warning', 'Cooldown Active', `Please wait before starting this activity again!`);
-                return;
-            }
-            
-            // Show confirmation modal
-            showActivityModal(activityType);
-        }
-
-        function showActivityModal(activityType) {
-            const config = activityConfig[activityType];
-            const modal = document.getElementById('activityModal');
-            
-            document.getElementById('modalIcon').className = `${config.icon} text-${config.color}-400`;
-            document.getElementById('modalTitle').textContent = config.name;
-            document.getElementById('modalMessage').textContent = 
-                `You will earn ${config.coins} coins for completing this ${config.duration}-second activity. Stay on the page to earn your reward!`;
-            
-            modal.classList.add('show');
-            
-            // Store the activity type for confirmation
-            modal.dataset.activityType = activityType;
-        }
-
-        function hideModal() {
-            document.getElementById('activityModal').classList.remove('show');
-        }
-
-        function confirmActivity() {
-            const modal = document.getElementById('activityModal');
-            const activityType = modal.dataset.activityType;
-            
-            hideModal();
-            executeActivity(activityType);
-        }
-
-        function executeActivity(activityType) {
-            const config = activityConfig[activityType];
-            
-            // Prevent rapid clicks
-            dashboardState.lastActivityTime[activityType] = Date.now();
-            
-            // Set activity in progress
-            dashboardState.activityInProgress = true;
-            
-            // Update button state
-            const button = document.getElementById(activityType + 'Button');
-            button.classList.add('processing');
-            
-            // Show activity timer
-            showActivityTimer(config);
-            
-            // Open activity URL in new tab
-            const activityWindow = window.open(config.url, '_blank');
-            
-            // Start activity countdown
-            startActivityCountdown(activityType, config, activityWindow);
-        }
-
-        function showActivityTimer(config) {
-            const timer = document.getElementById('activityTimer');
-            document.getElementById('activityType').textContent = config.name;
-            timer.classList.remove('hidden');
-        }
-
-        function startActivityCountdown(activityType, config, activityWindow) {
-            let timeLeft = config.duration;
-            const progressBar = document.getElementById('timerProgress');
-            const timerText = document.getElementById('timerText');
-            
-            dashboardState.activityTimer = setInterval(() => {
-                timeLeft--;
-                
-                // Update progress bar
-                const progressPercent = (timeLeft / config.duration) * 100;
-                progressBar.style.width = `${progressPercent}%`;
-                
-                // Update timer text
-                timerText.textContent = `Time remaining: ${timeLeft} seconds`;
-                
-                // Check if window was closed (anti-cheat)
-                if (activityWindow && activityWindow.closed) {
-                    securitySystem.reportViolation('window_closed_early');
-                    cancelActivity(activityType);
-                    return;
-                }
-                
-                // Activity completed
-                if (timeLeft <= 0) {
-                    completeActivity(activityType, config, activityWindow);
-                }
-            }, 1000);
-        }
-
-        function completeActivity(activityType, config, activityWindow) {
-            clearInterval(dashboardState.activityTimer);
-            dashboardState.activityInProgress = false;
-            
-            // Close activity window if still open
-            if (activityWindow && !activityWindow.closed) {
-                activityWindow.close();
-            }
-            
-            // Hide activity timer
-            document.getElementById('activityTimer').classList.add('hidden');
-            
-            // Award coins
-            awardCoins(config.coins);
-            
-            // Update stats
-            dashboardState.todayStats.coins += config.coins;
-            dashboardState.todayStats.activities += 1;
-            
-            // Add to recent activities
-            addRecentActivity(config.name, config.coins);
-            
-            // Start cooldown
-            startCooldown(activityType, config.cooldown);
+            // Show/hide appropriate sections
+            document.getElementById('guestNotice').classList.add('hidden');
+            document.getElementById('userOnlySection').style.display = 'grid';
             
             // Update displays
             updateDisplay();
-            updateTodayStats();
-            
-            // Show success notification
-            showNotification('success', 'Activity Completed!', `You earned ${config.coins} coins!`);
-            playSound('coin');
+            updateGameButtonStates();
         }
-
-        function cancelActivity(activityType) {
-            clearInterval(dashboardState.activityTimer);
-            dashboardState.activityInProgress = false;
-            
-            // Hide activity timer
-            document.getElementById('activityTimer').classList.add('hidden');
-            
-            // Reset button state
-            const button = document.getElementById(activityType + 'Button');
-            button.classList.remove('processing');
-            
-            showNotification('error', 'Activity Cancelled', 'Activity was cancelled due to security violation.');
-            playSound('error');
-        }
-
-        function awardCoins(amount) {
-            if (!dashboardState.currentUser) return;
-            
-            dashboardState.currentUser.coins += amount;
-            
-            // Convert coins to earnings (1000 coins = 1 BDT)
-            if (dashboardState.currentUser.coins >= 1000) {
-                const newEarnings = Math.floor(dashboardState.currentUser.coins / 1000);
-                dashboardState.currentUser.earnings += newEarnings;
-                dashboardState.currentUser.coins = dashboardState.currentUser.coins % 1000;
+        
+        function startActivity(type, url) {
+            if (appState.activityInProgress) {
+                showCustomAlert('Activity already in progress', 'warning');
+                return;
             }
             
-            // Create floating coin animation
-            createFloatingReward(amount);
+            // Reset security state for activity
+            securityState.activityMonitoring = true;
+            securityState.pageBlurCount = 0;
+            securityState.tabSwitches = 0;
             
-            // Save user data
-            saveUserData();
-        }
-
-        function createFloatingReward(amount) {
-            for (let i = 0; i < Math.min(amount / 5, 10); i++) {
-                setTimeout(() => {
-                    const coin = document.createElement('div');
-                    coin.className = 'floating-reward';
-                    coin.innerHTML = '💰';
-                    coin.style.left = Math.random() * window.innerWidth + 'px';
-                    coin.style.top = window.innerHeight * 0.7 + 'px';
-                    coin.style.color = '#fbbf24';
-                    
-                    document.body.appendChild(coin);
-                    
-                    setTimeout(() => {
-                        if (document.body.contains(coin)) {
-                            document.body.removeChild(coin);
-                        }
-                    }, 3000);
-                }, i * 200);
-            }
-        }
-
-        function startCooldown(activityType, duration) {
-            const endTime = Date.now() + (duration * 1000);
-            dashboardState.cooldownTimers[activityType] = endTime;
+            appState.activityInProgress = true;
+            appState.activityStartTime = Date.now();
+            appState.activityEndTime = Date.now() + (30 * 1000);
+            appState.activityType = type;
             
-            // Store in localStorage for persistence
-            localStorage.setItem('cooldowns', JSON.stringify(dashboardState.cooldownTimers));
+            // Disable buttons
+            document.querySelectorAll('.earning-btn').forEach(btn => {
+                btn.classList.add('disabled');
+            });
             
-            // Update button state
-            const button = document.getElementById(activityType + 'Button');
-            const cooldown = document.getElementById(activityType + 'Cooldown');
-            const timer = document.getElementById(activityType + 'Timer');
-            
-            button.classList.remove('processing');
-            button.classList.add('cooldown');
-            cooldown.classList.remove('hidden');
-            
-            // Start countdown display
-            const countdown = setInterval(() => {
-                const remaining = endTime - Date.now();
+            // Open activity page
+            try {
+                appState.activityWindow = window.open(url, '_blank');
                 
-                if (remaining <= 0) {
-                    clearInterval(countdown);
-                    endCooldown(activityType);
-                } else {
-                    const minutes = Math.floor(remaining / 60000);
-                    const seconds = Math.floor((remaining % 60000) / 1000);
-                    timer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                appState.windowCheckInterval = setInterval(() => {
+                    if (appState.activityWindow && appState.activityWindow.closed && appState.activityInProgress) {
+                        handleSecurityViolation('window_closed_early');
+                    }
+                }, 1000);
+            } catch (e) {
+                console.error('Unable to open activity page:', e);
+                resetActivityState();
+                showCustomAlert('Failed to open activity page', 'error');
+                return;
+            }
+            
+            startActivityTimer();
+        }
+        
+        function startActivityTimer() {
+            const duration = 30;
+            let timeLeft = duration;
+            
+            const activityTimer = document.getElementById('activityTimer');
+            activityTimer.classList.remove('hidden');
+            
+            // Clear any existing timer
+            if (appState.timer) {
+                clearInterval(appState.timer);
+                appState.timer = null;
+            }
+            
+            appState.timer = setInterval(() => {
+                timeLeft--;
+                const progressPercent = (timeLeft / duration) * 100;
+                
+                document.getElementById('timerProgress').style.width = `${progressPercent}%`;
+                
+                const t = translations[appState.language];
+                document.getElementById('timerText').textContent = `${t.time_remaining} ${timeLeft} ${t.seconds}`;
+                
+                // Play timer sound every 5 seconds
+                if (timeLeft > 0 && timeLeft % 5 === 0) {
+                    playSound('timer');
+                }
+                
+                // Security checks
+                if (appState.activityWindow && appState.activityWindow.closed) {
+                    handleSecurityViolation('window_closed_during_activity');
+                    return;
+                }
+                
+                if (securityState.suspiciousActions > 2) {
+                    handleSecurityViolation('too_many_violations');
+                    return;
+                }
+                
+                if (timeLeft <= 0) {
+                    completeActivity();
                 }
             }, 1000);
         }
-
-        function endCooldown(activityType) {
-            const button = document.getElementById(activityType + 'Button');
-            const cooldown = document.getElementById(activityType + 'Cooldown');
+        
+        function completeActivity() {
+            // Only proceed if we are in an activity
+            if (!appState.activityInProgress) {
+                return;
+            }
             
-            button.classList.remove('cooldown');
-            cooldown.classList.add('hidden');
+            const timeSpent = Date.now() - appState.activityStartTime;
+            const minTimeRequired = 28000; // 28 seconds
             
-            delete dashboardState.cooldownTimers[activityType];
-            localStorage.setItem('cooldowns', JSON.stringify(dashboardState.cooldownTimers));
+            // Clear intervals
+            if (appState.timer) {
+                clearInterval(appState.timer);
+                appState.timer = null;
+            }
+            if (appState.windowCheckInterval) {
+                clearInterval(appState.windowCheckInterval);
+                appState.windowCheckInterval = null;
+            }
             
-            showNotification('success', 'Ready!', `${activityConfig[activityType].name} is ready again!`);
+            // Capture the result
+            const success = timeSpent >= minTimeRequired && securityState.suspiciousActions < 3;
+            
+            // Reset activity state immediately to prevent re-entrancy
+            resetActivityState();
+            
+            if (success) {
+                if (appState.currentUser && !isGuestMode) {
+                    addCoins(10);
+                    appState.currentUser.activities++;
+                    appState.currentUser.lastActivity = new Date().toISOString();
+                    saveUserData(appState.currentUser);
+                } else if (isGuestMode) {
+                    showCustomAlert("Activity completed! Register to earn coins", 'info');
+                }
+                
+                if (appState.activityWindow && !appState.activityWindow.closed) {
+                    appState.activityWindow.close();
+                }
+                
+                showCustomAlert(translations[appState.language].activity_completed, 'success');
+                playSound('success');
+            } else {
+                showCustomAlert(translations[appState.language].cheat_detected, 'error');
+                playSound('error');
+            }
         }
-
-        function isInCooldown(activityType) {
-            const endTime = dashboardState.cooldownTimers[activityType];
-            return endTime && Date.now() < endTime;
+        
+        function resetActivityState() {
+            if (appState.timer) {
+                clearInterval(appState.timer);
+                appState.timer = null;
+            }
+            if (appState.windowCheckInterval) {
+                clearInterval(appState.windowCheckInterval);
+                appState.windowCheckInterval = null;
+            }
+            
+            appState.activityInProgress = false;
+            securityState.activityMonitoring = false;
+            appState.activityEndTime = 0;
+            appState.activityWindow = null;
+            appState.activityType = '';
+            
+            document.querySelectorAll('.earning-btn').forEach(btn => {
+                btn.classList.remove('disabled');
+            });
+            
+            document.getElementById('activityTimer').classList.add('hidden');
         }
-
-        function restoreCooldowns() {
-            const stored = localStorage.getItem('cooldowns');
-            if (stored) {
-                try {
-                    dashboardState.cooldownTimers = JSON.parse(stored);
-                    
-                    // Check and restore active cooldowns
-                    Object.keys(dashboardState.cooldownTimers).forEach(activityType => {
-                        if (isInCooldown(activityType)) {
-                            const remaining = dashboardState.cooldownTimers[activityType] - Date.now();
-                            startCooldown(activityType, remaining / 1000);
-                        } else {
-                            delete dashboardState.cooldownTimers[activityType];
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error restoring cooldowns:', error);
+        
+        function addCoins(amount) {
+            if (!appState.currentUser) return;
+            
+            // Enhanced security: Prevent automatic coin addition
+            const now = Date.now();
+            if (now - appState.lastCoinAddition < 30000) {
+                securityState.coinIncrementAttempts++;
+                if (securityState.coinIncrementAttempts > 2) {
+                    handleSecurityViolation('coin_cheating_detected');
+                    return;
                 }
             }
-        }
-
-        function addRecentActivity(name, coins) {
-            const container = document.getElementById('recentActivities');
-            const activity = document.createElement('div');
-            activity.className = 'flex items-center justify-between p-3 bg-white/5 rounded-lg';
-            activity.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-coins text-yellow-400 mr-3"></i>
-                    <div>
-                        <p class="text-white text-sm font-medium">${name} completed</p>
-                        <p class="text-white/60 text-xs">Just now</p>
-                    </div>
-                </div>
-                <span class="text-green-400 font-semibold">+${coins} coins</span>
-            `;
             
-            container.insertBefore(activity, container.firstChild);
+            appState.currentUser.coins += amount;
+            appState.lastCoinAddition = now;
             
-            // Keep only last 5 activities
-            while (container.children.length > 5) {
-                container.removeChild(container.lastChild);
+            // Convert coins to earnings
+            if (appState.currentUser.coins >= 1000) {
+                const newTaka = Math.floor(appState.currentUser.coins / 1000);
+                appState.currentUser.earnings += newTaka;
+                appState.currentUser.coins = appState.currentUser.coins % 1000;
             }
-        }
-
-        function copyReferralCode() {
-            const code = document.getElementById('userReferralCode').textContent;
             
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(code).then(() => {
-                    showNotification('success', 'Copied!', 'Referral code copied to clipboard!');
-                });
-            } else {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = code;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showNotification('success', 'Copied!', 'Referral code copied to clipboard!');
+            // Coin animation
+            const coinIcon = document.querySelector('.coin-icon');
+            if (coinIcon) {
+                coinIcon.classList.add('coin-bounce');
+                setTimeout(() => coinIcon.classList.remove('coin-bounce'), 600);
             }
+            
+            // Create floating coins
+            for (let i = 0; i < Math.min(amount, 5); i++) {
+                setTimeout(() => createFloatingReward('💰', '#fbbf24'), i * 100);
+            }
+            
+            // Play coin sound
+            playSound('coin');
+            updateDisplay();
         }
-
-        function shareReferralCode() {
-            const code = document.getElementById('userReferralCode').textContent;
-            const shareText = `Join Coin Earner Pro and start earning money! Use my referral code: ${code}`;
-            const shareUrl = `${window.location.origin}?ref=${code}`;
+        
+        function addDiamonds(amount) {
+            if (!appState.currentUser) return;
+            appState.currentUser.diamonds += amount;
+            // Create floating diamonds
+            for (let i = 0; i < amount; i++) {
+                setTimeout(() => createFloatingReward('💎', '#06b6d4'), i * 100);
+            }
+            // Play coin sound for diamonds as well
+            playSound('coin');
+            updateDisplay();
+            updateGameButtonStates();
+        }
+        
+        function createFloatingReward(icon, color) {
+            const reward = document.createElement('div');
+            reward.innerHTML = icon;
+            reward.className = 'floating-reward';
+            reward.style.color = color;
+            reward.style.left = Math.random() * window.innerWidth + 'px';
+            reward.style.top = window.innerHeight * 0.8 + 'px';
+            document.body.appendChild(reward);
+            
+            setTimeout(() => {
+                if (document.body.contains(reward)) {
+                    document.body.removeChild(reward);
+                }
+            }, 2000);
+        }
+        
+        function logout() {
+            if (appState.activityInProgress) {
+                handleSecurityViolation('logout_during_activity');
+            }
+            
+            appState.currentUser = null;
+            appState.isAuthenticated = false;
+            appState.isGuestMode = false;
+            
+            // Clear stored login
+            localStorage.removeItem('coinEarnerUser');
+            
+            // Redirect to login
+            window.location.href = 'index.html';
+        }
+        
+        function shareApp() {
+            if (isGuestMode) {
+                // Allow guest sharing but no rewards
+                const shareText = appState.language === 'en' ? 
+                    `Coin Earner Pro - Earn Money Playing Games!\n` +
+                    `Share this app and start earning today!\n` +
+                    window.location.href :
+                    `কয়েন আর্নার প্রো - গেম খেলে টাকা জিতুন!\n` +
+                    `এই অ্যাপটি শেয়ার করুন এবং আজই উপার্জন শুরু করুন!\n` +
+                    window.location.href;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Coin Earner Pro',
+                        text: shareText
+                    });
+                } else {
+                    copyToClipboard(shareText);
+                }
+                return;
+            }
+            
+            if (!appState.currentUser || !appState.currentUser.isEmailVerified) {
+                showCustomAlert(translations[appState.language].guest_earning_disabled, 'warning');
+                playSound('warning');
+                return;
+            }
+            
+            const shareText = appState.language === 'en' ? 
+                `Join Coin Earner Pro! My referral code: ${appState.currentUser.referralCode}\n` +
+                `Earn money playing games!\n` +
+                window.location.href + `?ref=${appState.currentUser.referralCode}` :
+                `কয়েন আর্নার প্রোতে যোগ দিন! আমার রেফারেল কোড: ${appState.currentUser.referralCode}\n` +
+                `গেম খেলে টাকা জিতুন!\n` +
+                window.location.href + `?ref=${appState.currentUser.referralCode}`;
             
             if (navigator.share) {
                 navigator.share({
                     title: 'Coin Earner Pro',
-                    text: shareText,
-                    url: shareUrl
+                    text: shareText
+                }).then(() => {
+                    awardShareBonus();
+                }).catch(() => {
+                    copyToClipboard(shareText);
+                    awardShareBonus();
                 });
             } else {
-                copyReferralCode();
+                copyToClipboard(shareText);
+                awardShareBonus();
             }
         }
-
-        function saveUserData() {
-            if (dashboardState.currentUser) {
-                // This would typically save to your backend
-                localStorage.setItem('userData', JSON.stringify(dashboardState.currentUser));
-            }
+        
+        function awardShareBonus() {
+            addDiamonds(2);
+            appState.currentUser.lastActivity = new Date().toISOString();
+            saveUserData(appState.currentUser);
+            showCustomAlert(translations[appState.language].share_earned, 'success');
+            playSound('success');
         }
-
-        function showNotification(type, title, message) {
-            const toast = document.getElementById('notificationToast');
-            const icon = document.getElementById('toastIcon');
-            const titleEl = document.getElementById('toastTitle');
-            const messageEl = document.getElementById('toastMessage');
+        
+        function withdrawEarnings() {
+            if (isGuestMode || !appState.currentUser) {
+                showCustomAlert(translations[appState.language].guest_earning_disabled, 'warning');
+                playSound('warning');
+                return;
+            }
+            if (appState.currentUser.earnings < 20) {
+                showCustomAlert(translations[appState.language].insufficient_balance, 'warning');
+                playSound('warning');
+                return;
+            }
             
-            const icons = {
-                success: 'fas fa-check-circle text-green-400',
-                error: 'fas fa-exclamation-circle text-red-400',
-                warning: 'fas fa-exclamation-triangle text-yellow-400',
-                info: 'fas fa-info-circle text-blue-400'
+            const t = translations[appState.language];
+            const message = t.withdraw_confirm.replace('{amount}', formatCurrency(appState.currentUser.earnings));
+            
+            showCustomConfirm(message, (confirmed) => {
+                if (confirmed) {
+                    const whatsappMessage = `Withdraw: ${formatCurrency(appState.currentUser.earnings)}\nName: ${appState.currentUser.name}\nEmail: ${appState.currentUser.email}\nMobile: ${appState.currentUser.mobile}\nAddress: ${appState.currentUser.address || 'Not provided'}\nReferral Code: ${appState.currentUser.referralCode}\nTotal Activities: ${appState.currentUser.activities}`;
+                    const whatsappUrl = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                    
+                    window.open(whatsappUrl, '_blank');
+                    
+                    // Reset user data after withdrawal
+                    appState.currentUser.coins = 0;
+                    appState.currentUser.diamonds = 0;
+                    appState.currentUser.earnings = 0;
+                    appState.currentUser.activities = 0;
+                    appState.currentUser.dailyUnlockedGames = false;
+                    appState.currentUser.dailyUnlockedVideos = false;
+                    appState.currentUser.lastActivity = new Date().toISOString();
+                    saveUserData(appState.currentUser);
+                    
+                    updateDisplay();
+                    updateGameButtonStates();
+                    
+                    showCustomAlert(t.withdraw_success, 'success');
+                    playSound('success');
+                }
+            });
+        }
+        
+        function updateDisplay() {
+            const elements = {
+                coinCount: document.getElementById('coinCount'),
+                diamondCount: document.getElementById('diamondCount'),
+                earnings: document.getElementById('earnings'),
+                activitiesCount: document.getElementById('activitiesCount'),
+                referralCount: document.getElementById('referralCount'),
+                progressBar: document.getElementById('progressBar'),
+                progressText: document.getElementById('progressText'),
+                withdrawableAmount: document.getElementById('withdrawableAmount'),
+                currentDiamonds: document.getElementById('currentDiamonds')
             };
             
-            icon.className = icons[type] || icons.info;
-            titleEl.textContent = title;
-            messageEl.textContent = message;
+            if (appState.currentUser) {
+                elements.coinCount.textContent = formatNumber(appState.currentUser.coins);
+                elements.diamondCount.textContent = formatNumber(appState.currentUser.diamonds);
+                elements.earnings.textContent = formatCurrency(appState.currentUser.earnings);
+                elements.activitiesCount.textContent = formatNumber(appState.currentUser.activities);
+                elements.referralCount.textContent = formatNumber(appState.currentUser.referrals);
+                const coinsToNextTaka = appState.currentUser.coins % 1000;
+                const progressPercent = (coinsToNextTaka / 1000) * 100;
+                elements.progressBar.style.width = `${progressPercent}%`;
+                elements.progressText.textContent = `${coinsToNextTaka}/1000 coins`;
+                elements.withdrawableAmount.textContent = formatCurrency(appState.currentUser.earnings);
+                if (elements.currentDiamonds) {
+                    elements.currentDiamonds.textContent = appState.currentUser.diamonds;
+                }
+            } else {
+                // Guest mode - show zeros
+                Object.values(elements).forEach(el => {
+                    if (el && (el.id === 'earnings' || el.id === 'withdrawableAmount')) {
+                        el.textContent = formatCurrency(0);
+                    } else if (el && el.id === 'progressText') {
+                        el.textContent = '0/1000 coins';
+                    } else if (el) {
+                        el.textContent = '0';
+                    }
+                });
+            }
+        }
+        
+        function updateGameButtonStates() {
+            const gamesBtn = document.getElementById('gamesBtn');
+            const videosBtn = document.getElementById('videosBtn');
+            const unlockNotice = document.getElementById('unlockNotice');
             
-            toast.classList.add('show');
+            if (!appState.currentUser || !appState.currentUser.isEmailVerified) {
+                unlockNotice.classList.add('hidden');
+                gamesBtn.classList.remove('button-locked');
+                videosBtn.classList.remove('button-locked');
+                return;
+            }
+            
+            const today = new Date().toDateString();
+            
+            if (appState.currentUser.lastUnlockDate !== today) {
+                appState.currentUser.dailyUnlockedGames = false;
+                appState.currentUser.dailyUnlockedVideos = false;
+                appState.currentUser.lastUnlockDate = today;
+            }
+            
+            const needsGameUnlock = !appState.currentUser.dailyUnlockedGames;
+            const needsVideoUnlock = !appState.currentUser.dailyUnlockedVideos;
+            const hasGameDiamonds = appState.currentUser.diamonds >= 10;
+            const hasVideoDiamonds = appState.currentUser.diamonds >= 50;
+            
+            if ((needsGameUnlock && !hasGameDiamonds) || (needsVideoUnlock && !hasVideoDiamonds)) {
+                unlockNotice.classList.remove('hidden');
+            } else {
+                unlockNotice.classList.add('hidden');
+            }
+            
+            if (needsGameUnlock && !hasGameDiamonds) {
+                gamesBtn.classList.add('button-locked');
+            } else {
+                gamesBtn.classList.remove('button-locked');
+            }
+            
+            if (needsVideoUnlock && !hasVideoDiamonds) {
+                videosBtn.classList.add('button-locked');
+            } else {
+                videosBtn.classList.remove('button-locked');
+            }
+        }
+        
+        function formatCurrency(amount) {
+            const bdtAmount = amount.toFixed(2);
+            return appState.language === 'en' ? `${bdtAmount} BDT` : `${bdtAmount} টাকা`;
+        }
+        
+        function formatNumber(num) {
+            return appState.language === 'en' ? num.toString() : num.toLocaleString('bn-BD');
+        }
+        
+        function checkActivityPermission(activityType, diamondCost) {
+            if (isGuestMode || !appState.currentUser || !appState.currentUser.isEmailVerified) {
+                showCustomAlert(translations[appState.language].guest_earning_disabled, 'warning');
+                playSound('warning');
+                return false;
+            }
+            if (!appState.currentUser.isActive) {
+                showCustomAlert(translations[appState.language].account_inactive, 'error');
+                playSound('error');
+                return false;
+            }
+            const today = new Date().toDateString();
+            
+            if (appState.currentUser.lastUnlockDate !== today) {
+                appState.currentUser.dailyUnlockedGames = false;
+                appState.currentUser.dailyUnlockedVideos = false;
+                appState.currentUser.lastUnlockDate = today;
+            }
+            
+            // Check if already unlocked today
+            if (activityType === 'games' && !appState.currentUser.dailyUnlockedGames) {
+                if (appState.currentUser.diamonds >= diamondCost) {
+                    appState.currentUser.diamonds -= diamondCost;
+                    appState.currentUser.dailyUnlockedGames = true;
+                    saveUserData(appState.currentUser);
+                    updateDisplay();
+                    updateGameButtonStates();
+                    
+                    const message = translations[appState.language].daily_unlocked_games;
+                    showCustomAlert(message, 'success');
+                    playSound('success');
+                } else {
+                    const message = translations[appState.language].insufficient_diamonds_games;
+                    showCustomAlert(message, 'warning');
+                    playSound('warning');
+                }
+                return true;
+            }
+            
+            if (activityType === 'videos' && !appState.currentUser.dailyUnlockedVideos) {
+                if (appState.currentUser.diamonds >= diamondCost) {
+                    appState.currentUser.diamonds -= diamondCost;
+                    appState.currentUser.dailyUnlockedVideos = true;
+                    saveUserData(appState.currentUser);
+                    updateDisplay();
+                    updateGameButtonStates();
+                    
+                    const message = translations[appState.language].daily_unlocked_videos;
+                    showCustomAlert(message, 'success');
+                    playSound('success');
+                } else {
+                    const message = translations[appState.language].insufficient_diamonds_videos;
+                    showCustomAlert(message, 'warning');
+                    playSound('warning');
+                }
+                return true;
+            }
+            
+            return true;
+        }
+        
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark');
+            }
+        }
+        
+        // Modal functions
+        function showCustomAlert(message, type = 'info') {
+            const alertIcon = document.getElementById('alertIcon');
+            const alertMessage = document.getElementById('alertMessage');
+            const customAlert = document.getElementById('customAlert');
+            
+            switch(type) {
+                case 'success':
+                    alertIcon.className = 'fas fa-check-circle text-5xl mb-4 text-green-400';
+                    playSound('success');
+                    break;
+                case 'error':
+                    alertIcon.className = 'fas fa-exclamation-circle text-5xl mb-4 text-red-400';
+                    playSound('error');
+                    break;
+                case 'warning':
+                    alertIcon.className = 'fas fa-exclamation-triangle text-5xl mb-4 text-yellow-400';
+                    playSound('warning');
+                    break;
+                default:
+                    alertIcon.className = 'fas fa-info-circle text-5xl mb-4 text-blue-400';
+                    playSound('info');
+            }
+            
+            alertMessage.textContent = message;
+            customAlert.classList.add('show');
             
             setTimeout(() => {
-                toast.classList.remove('show');
-            }, 5000);
+                customAlert.classList.remove('show');
+            }, 3000);
         }
-
-        function logout() {
-            // Clear session data
-            sessionStorage.clear();
-            localStorage.removeItem('userData');
-            localStorage.removeItem('cooldowns');
+        
+        function hideCustomAlert() {
+            document.getElementById('customAlert').classList.remove('show');
+        }
+        
+        function showCustomConfirm(message, callback) {
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('customConfirm').classList.add('show');
             
-            // Redirect to authentication page
-            window.location.href = 'index.html';
+            // Store callback for later use
+            window.confirmCallback = callback;
         }
-
-        function showSection(section) {
-            // This function would handle navigation between sections
-            // For now, we just update the active nav link
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        // Expose functions globally
-        window.toggleTheme = toggleTheme;
-        window.startEarningActivity = startEarningActivity;
-        window.hideModal = hideModal;
-        window.confirmActivity = confirmActivity;
-        window.copyReferralCode = copyReferralCode;
-        window.shareReferralCode = shareReferralCode;
-        window.logout = logout;
-        window.showSection = showSection;
-
-        // Anti-cheat: Prevent console manipulation
-        (function() {
-            const devtools = {
-                open: false,
-                orientation: null
-            };
+        
+        function hideCustomConfirm(result) {
+            document.getElementById('customConfirm').classList.remove('show');
             
-            setInterval(() => {
-                if (window.outerHeight - window.innerHeight > 200 ||
-                    window.outerWidth - window.innerWidth > 200) {
-                    if (!devtools.open) {
-                        devtools.open = true;
-                        securitySystem.reportViolation('dev_tools_opened');
-                    }
-                } else {
-                    devtools.open = false;
+            // Execute callback if available
+            if (window.confirmCallback) {
+                window.confirmCallback(result);
+                window.confirmCallback = null;
+            }
+        }
+        
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCustomAlert('Link copied to clipboard!', 'success');
+                    playSound('success');
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCustomAlert('Link copied to clipboard!', 'success');
+                playSound('success');
+            }
+        }
+        
+        function playSound(type) {
+            try {
+                const sound = document.getElementById(`${type}Sound`);
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.log('Sound play failed:', e));
                 }
-            }, 500);
-        })();
+            } catch (error) {
+                console.error('Error playing sound:', error);
+            }
+        }
+        
+        // Google Apps Script functions
+        async function saveUserData(user) {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'saveUser');
+                formData.append('userData', JSON.stringify(user));
+                
+                const response = await fetch(config.apiEndpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.text();
+                console.log('Save user response:', result);
+                
+                if (result.includes('error')) {
+                    throw new Error(result);
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error saving user data:', error);
+                throw error;
+            }
+        }
+        
+        // Additional utility functions
+        function generateReferralCode() {
+            return 'REF' + Math.random().toString(36).substr(2, 6).toUpperCase() + Date.now().toString().slice(-3);
+        }
+        
+        // Global functions for onclick handlers
+        window.logout = logout;
+        window.shareApp = shareApp;
+        window.withdrawEarnings = withdrawEarnings;
+        window.toggleTheme = toggleTheme;
+        window.hideCustomAlert = hideCustomAlert;
+        window.hideCustomConfirm = hideCustomConfirm;
+        
+        // Initialize theme
+        loadTheme();
+        
+        // Start activity monitoring
+        setInterval(() => {
+            if (appState.activityInProgress) {
+                const timeSpent = Date.now() - appState.activityStartTime;
+                if (timeSpent > 30000) { // 30 seconds timeout
+                    resetActivityState();
+                    showCustomAlert('Activity timed out', 'warning');
+                }
+            }
+        }, 5000);
     </script>
 </body>
 </html>
