@@ -4,119 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coin Earner Pro - Authentication</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .glass-input {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .dark .gradient-bg {
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-        }
-        
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-content {
-            max-width: 500px;
-            width: 90%;
-            margin: 1rem;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .hidden { display: none !important; }
-        
-        .button-disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        
-        .button-locked {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-            position: relative;
-        }
-        
-        .button-locked::before {
-            content: '🔒';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            z-index: 1;
-        }
-        
-        .verification-pending {
-            border: 2px dashed #f59e0b;
-            background: rgba(245, 158, 11, 0.1);
-        }
-        
-        .account-inactive {
-            border: 2px dashed #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .spinner {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #3498db;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="styles/global.css" rel="stylesheet">
 </head>
 <body class="gradient-bg text-white">
     <!-- Audio elements for sound effects -->
@@ -135,117 +25,133 @@
     <audio id="timerSound" preload="auto">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-clock-bleeps-888.mp3" type="audio/mpeg">
     </audio>
-    
+
+    <!-- Security status indicator -->
+    <div class="security-status security-active" id="securityStatus">
+        <i class="fas fa-shield-alt"></i>
+        <span>Security Active</span>
+    </div>
+
     <!-- Registration Modal -->
     <div class="modal-overlay" id="registrationModal">
         <div class="modal-content glass rounded-2xl p-8">
             <h2 class="text-3xl font-bold mb-6 text-center text-white">
                 <i class="fas fa-user-plus text-blue-400 mr-3"></i>
-                Create Account
+                <span data-translate="create_account">Create Account</span>
             </h2>
             <form id="registrationForm" class="space-y-4">
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Full Name</label>
-                    <input type="text" id="regName" required minlength="2" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="Your full name">
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="full_name">Full Name</label>
+                    <input type="text" id="regName" required minlength="2" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="আপনার পূর্ণ নাম">
                 </div>
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Mobile Number</label>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="mobile_number">Mobile Number</label>
                     <input type="tel" id="regMobile" required pattern="^\+?[1-9]\d{1,14}$" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="+8801XXXXXXXXX">
-                    <small class="text-white/60 text-xs">International format (e.g., +8801XXXXXXXXX)</small>
+                    <small class="text-white/60 text-xs mt-1">International format (e.g., +8801XXXXXXXXX)</small>
                 </div>
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Gmail Address</label>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="email">Gmail Address</label>
                     <input type="email" id="regEmail" required pattern=".*@gmail\.com$" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="example@gmail.com">
-                    <small class="text-white/60 text-xs">Only Gmail addresses accepted</small>
+                    <small class="text-white/60 text-xs mt-1">Only Gmail addresses accepted</small>
                 </div>
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="regPassword" required minlength="6" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="Secure password (6+ characters)">
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="password">Password</label>
+                    <input type="password" id="regPassword" required minlength="6" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="নিরাপদ পাসওয়ার্ড (৬+ অক্ষর)">
                 </div>
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Address (Optional)</label>
-                    <input type="text" id="regAddress" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="Your address (optional)">
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="address_optional">Address (Optional)</label>
+                    <input type="text" id="regAddress" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="ঠিকানা (ঐচ্ছিক)">
                 </div>
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Referral Code (Optional)</label>
-                    <input type="text" id="regReferral" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="Referral code">
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="referral_code">Referral Code (Optional)</label>
+                    <input type="text" id="regReferral" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="রেফারেল কোড">
                 </div>
                 <div class="flex space-x-3 pt-4">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
-                        Register
+                        <span data-translate="register">Register</span>
                     </button>
                     <button type="button" onclick="showLoginModal()" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
-                        Login
+                        <span data-translate="login">Login</span>
+                    </button>
+                </div>
+                <div class="pt-2">
+                    <button type="button" onclick="enterGuestMode()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl hover:from-yellow-600 hover:to-orange-600 font-semibold transition-all">
+                        <span data-translate="continue_guest">Continue as Guest</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    
+
     <!-- Login Modal -->
     <div class="modal-overlay hidden" id="loginModal">
         <div class="modal-content glass rounded-2xl p-8">
             <h2 class="text-3xl font-bold mb-6 text-center text-white">
                 <i class="fas fa-sign-in-alt text-green-400 mr-3"></i>
-                Login
+                <span data-translate="login">Login</span>
             </h2>
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Gmail Address</label>
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="email">Gmail Address</label>
                     <input type="email" id="loginEmail" required pattern=".*@gmail\.com$" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="example@gmail.com">
                 </div>
                 <div>
-                    <label class="block text-white/80 text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="Your password">
+                    <label class="block text-white/80 text-sm font-medium mb-2" data-translate="password">Password</label>
+                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 input-base" placeholder="পাসওয়ার্ড">
                 </div>
                 <div class="flex items-center">
                     <input type="checkbox" id="rememberMe" class="mr-2 w-4 h-4 rounded">
-                    <label for="rememberMe" class="text-white/80 text-sm">Remember me on this device</label>
+                    <label for="rememberMe" class="text-white/80 text-sm" data-translate="remember_me">Remember me on this device</label>
                 </div>
                 <div class="flex space-x-3 pt-4">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
-                        Login
+                        <span data-translate="login">Login</span>
                     </button>
                     <button type="button" onclick="showRegistrationModal()" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
-                        Register
+                        <span data-translate="register">Register</span>
+                    </button>
+                </div>
+                <div class="pt-2">
+                    <button type="button" onclick="enterGuestMode()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl hover:from-yellow-600 hover:to-orange-600 font-semibold transition-all">
+                        <span data-translate="continue_guest">Continue as Guest</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    
+
     <!-- Email Verification Modal -->
     <div class="modal-overlay hidden" id="emailVerificationModal">
         <div class="modal-content glass rounded-2xl p-8 text-center">
             <i class="fas fa-envelope-circle-check text-6xl text-blue-400 mb-4"></i>
-            <h2 class="text-2xl font-bold mb-4">Verify Your Email</h2>
-            <p class="text-white/80 mb-6">A verification code has been sent to your email. Please check and enter the code.</p>
-            <p class="text-white/60 text-xs mb-1">If you don't see it, check your spam folder!</p>
+            <h2 class="text-2xl font-bold mb-4 text-white" data-translate="verify_email">Verify Your Email</h2>
+            <p class="text-white/80 mb-6" data-translate="verification_sent">A verification code has been sent to your email. Please check and enter the code.</p>
+            <p class="text-white/60 text-xs mb-1" data-translate="check_spam">If you don't see it, check your spam folder!</p>
             <div class="space-y-4">
                 <input type="text" id="verificationCode" placeholder="Enter 6-digit code" maxlength="6" class="w-full px-4 py-3 glass-input rounded-xl text-white placeholder-white/50 text-center text-lg font-mono input-base">
-                <div class="flex space-x-3">
+                <div class="flex space-x-4">
                     <button onclick="verifyEmail()" class="flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition-all">
-                        Verify
+                        <span data-translate="verify">Verify</span>
                     </button>
-                    <button id="resendButton" onclick="resendVerification()" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
-                        Resend <span id="resendCountdown"></span>
+                    <button onclick="resendVerification()" id="resendButton" class="flex-1 glass text-white py-3 px-6 rounded-xl hover:bg-white/20 font-semibold transition-all">
+                        <span data-translate="resend">Resend</span> <span id="resendCountdown"></span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Custom Alert Modal -->
     <div class="modal-overlay hidden" id="customAlert">
         <div class="modal-content glass rounded-2xl p-8 text-center">
             <i id="alertIcon" class="fas fa-info-circle text-5xl mb-4"></i>
             <p id="alertMessage" class="text-xl mb-6 text-white"></p>
             <button onclick="hideCustomAlert()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
-                OK
+                <span data-translate="ok">OK</span>
             </button>
         </div>
     </div>
-    
+
     <!-- Confirmation Modal -->
     <div class="modal-overlay hidden" id="customConfirm">
         <div class="modal-content glass rounded-2xl p-8 text-center">
@@ -253,122 +159,17 @@
             <p id="confirmMessage" class="text-xl mb-6 text-white"></p>
             <div class="flex space-x-4 justify-center">
                 <button onclick="hideCustomConfirm(false)" class="px-6 py-3 glass text-white rounded-xl hover:bg-white/20 font-semibold transition-all">
-                    Cancel
+                    <span data-translate="cancel">Cancel</span>
                 </button>
                 <button onclick="hideCustomConfirm(true)" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 font-semibold transition-all">
-                    Confirm
+                    <span data-translate="confirm">Confirm</span>
                 </button>
             </div>
         </div>
     </div>
-    
-    <!-- Main App -->
-    <div id="mainApp" class="hidden">
-        <div class="container mx-auto px-4 py-6">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-6">
-                <select id="languageSelector" class="glass rounded-xl px-4 py-2 text-white input-base">
-                    <option value="en">English</option>
-                </select>
-                
-                <div class="flex items-center space-x-4">
-                    <span class="text-white/90 text-sm" id="userGreeting"></span>
-                    <div id="authButtons"></div>
-                </div>
-            </div>
-            <!-- Status Notices -->
-            <div id="guestNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-yellow-400">
-                <div class="flex items-center">
-                    <i class="fas fa-user-clock text-yellow-400 mr-3 text-xl"></i>
-                    <div>
-                        <h4 class="font-semibold text-yellow-400">Guest Mode</h4>
-                        <p class="text-white/80 text-sm">You're browsing as a guest. Register to start earning!</p>
-                    </div>
-                </div>
-            </div>
-            <div id="verificationNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-orange-400 verification-pending">
-                <div class="flex items-center">
-                    <i class="fas fa-envelope-open-text text-orange-400 mr-3 text-xl pulse"></i>
-                    <div>
-                        <h4 class="font-semibold text-orange-400">Email Verification Required</h4>
-                        <p class="text-white/80 text-sm">Please verify your email to start earning coins!</p>
-                        <button onclick="showEmailVerification()" class="mt-2 text-xs bg-orange-500 text-white px-3 py-1 rounded-lg hover:bg-orange-600 transition-all">
-                            Verify Now
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div id="inactiveNotice" class="hidden glass rounded-2xl p-4 mb-6 border-l-4 border-red-400 account-inactive">
-                <div class="flex items-center">
-                    <i class="fas fa-user-slash text-red-400 mr-3 text-xl"></i>
-                    <div>
-                        <h4 class="font-semibold text-red-400">Account Deactivated</h4>
-                        <p class="text-white/80 text-sm">Your account has been deactivated. Please contact support.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Title -->
-            <div class="text-center mb-8">
-                <h1 class="text-5xl font-bold mb-3">
-                    <i class="fas fa-coins text-yellow-400"></i> 
-                    <span>Coin Earner Pro</span>
-                </h1>
-                <p class="text-white/80 text-lg">Play games and earn coins! 1000 coins = 1.00 BDT</p>
-            </div>
-            <!-- Instructions -->
-            <div class="glass rounded-2xl p-6 mb-6">
-                <div class="flex items-start">
-                    <i class="fas fa-lightbulb text-yellow-400 mr-3 mt-1 text-xl"></i>
-                    <div>
-                        <h4 class="font-semibold text-yellow-400 mb-3">How to Earn:</h4>
-                        <ul class="text-white/80 text-sm space-y-2 list-disc list-inside">
-                            <li>Register with Gmail and verify your email</li>
-                            <li>Share the app to earn 2 diamonds per share</li>
-                            <li>Use diamonds to unlock daily games (10💎) and videos (50💎)</li>
-                            <li>Complete activities for 30 seconds to earn 10 coins each</li>
-                            <li>Valid referral codes give 30 bonus coins</li>
-                            <li>When someone uses your referral, you get 30 coins</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- Action Buttons -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <button id="gamesBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
-                    <i class="fas fa-gamepad text-5xl mb-4 text-purple-400 group-hover:scale-110 transition-transform"></i>
-                    <h3 class="text-xl font-bold text-white mb-2">Play Games</h3>
-                    <p class="text-white/70 text-sm">Earn 10 Coins (30s)</p>
-                    <p class="text-cyan-400 text-xs mt-1">Cost: 10 💎</p>
-                </button>
-                <button id="videosBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
-                    <i class="fas fa-video text-5xl mb-4 text-red-400 group-hover:scale-110 transition-transform"></i>
-                    <h3 class="text-xl font-bold text-white mb-2">Watch Videos</h3>
-                    <p class="text-white/70 text-sm">Earn 10 Coins (30s)</p>
-                    <p class="text-cyan-400 text-xs mt-1">Cost: 50 💎</p>
-                </button>
-                <button id="productsBtn" class="earning-btn glass rounded-2xl p-8 text-center hover:bg-white/10 transition-all group">
-                    <i class="fas fa-shopping-bag text-5xl mb-4 text-green-400 group-hover:scale-110 transition-transform"></i>
-                    <h3 class="text-xl font-bold text-white mb-2">View Products</h3>
-                    <p class="text-white/70 text-sm">Browse Amazing Products</p>
-                    <p class="text-green-400 text-xs mt-1">Free Browsing</p>
-                </button>
-            </div>
-            <!-- Continue as Guest Button -->
-            <div class="text-center mb-8">
-                <button onclick="enterGuestMode()" class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl hover:from-yellow-600 hover:to-orange-600 font-semibold transition-all">
-                    Continue as Guest
-                </button>
-            </div>
-            <!-- Footer -->
-            <div class="text-center mt-8 text-white/60">
-                <p class="text-sm">
-                    <i class="fas fa-shield-alt mr-2"></i>
-                    Secure data storage with advanced anti-cheat protection
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <script src="common.js"></script>
+
+    <!-- Scripts -->
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/common.js"></script>
 </body>
 </html>
